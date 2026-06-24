@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Supercell Explorer 🌟 | Class 6 Maths</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Nunito',sans-serif;background:#f0fdf4;color:#14532d;min-height:100vh;overflow-x:hidden;}
+
+/* CLOUDS */
+.clouds{position:fixed;top:0;left:0;right:0;height:150px;pointer-events:none;z-index:0;overflow:hidden;}
+.cloud{position:absolute;background:#fff;border-radius:50px;opacity:.6;}
+.cloud::before,.cloud::after{content:'';position:absolute;background:#fff;border-radius:50%;}
+.c1{width:90px;height:28px;top:16px;left:-110px;animation:drift 24s linear infinite;}
+.c1::before{width:40px;height:40px;top:-18px;left:12px;}
+.c1::after{width:28px;height:28px;top:-12px;left:40px;}
+.c2{width:70px;height:22px;top:40px;left:-90px;animation:drift 32s 10s linear infinite;opacity:.4;}
+.c2::before{width:30px;height:30px;top:-14px;left:10px;}
+.c2::after{width:22px;height:22px;top:-10px;left:32px;}
+.c3{width:100px;height:30px;top:8px;left:-120px;animation:drift 28s 16s linear infinite;opacity:.45;}
+.c3::before{width:46px;height:46px;top:-20px;left:14px;}
+.c3::after{width:32px;height:32px;top:-14px;left:50px;}
+@keyframes drift{to{transform:translateX(calc(100vw + 220px));}}
+
+.wrapper{position:relative;z-index:2;max-width:920px;margin:0 auto;padding:0 0 2rem;}
+
+/* HEADER */
+.hdr{text-align:center;padding:1.4rem 1rem .5rem;}
+.hdr h1{font-family:'Baloo 2',cursive;font-size:clamp(1.8rem,5vw,2.8rem);font-weight:800;color:#16a34a;line-height:1.1;}
+.hdr h1 span{color:#f59e0b;}
+.hdr p{color:#6b7280;font-size:.88rem;font-weight:700;margin-top:.2rem;}
+
+/* TABS */
+.tabs{display:flex;background:#fff;border-radius:16px 16px 0 0;border:2px solid #bbf7d0;border-bottom:none;margin:0 .5rem;overflow:hidden;}
+.tab{flex:1;padding:.62rem .3rem;font-family:'Baloo 2',cursive;font-size:.85rem;font-weight:700;border:none;background:transparent;cursor:pointer;color:#9ca3af;transition:all .2s;border-bottom:3px solid transparent;}
+.tab.active{color:#16a34a;background:#f0fdf4;border-bottom:3px solid #16a34a;}
+.tab:hover:not(.active){background:#fafafa;color:#6b7280;}
+
+.panel{display:none;background:#fff;border:2px solid #bbf7d0;border-top:none;border-radius:0 0 16px 16px;margin:0 .5rem;padding:.7rem .5rem .9rem;}
+.panel.active{display:block;}
+
+/* RULE BOX */
+.rbox{background:#dcfce7;border:1.5px solid #86efac;border-radius:12px;padding:.5rem .9rem;margin:.3rem .1rem .5rem;font-size:.76rem;color:#166534;font-weight:700;line-height:1.5;}
+.rbox strong{color:#16a34a;}
+.rbox.amber{background:#fef3c7;border-color:#fcd34d;color:#92400e;}
+.rbox.amber strong{color:#d97706;}
+.rbox.blue{background:#dbeafe;border-color:#93c5fd;color:#1e40af;}
+.rbox.blue strong{color:#2563eb;}
+
+/* SECTION TITLE */
+.sec-title{font-family:'Baloo 2',cursive;font-size:.95rem;font-weight:800;color:#14532d;margin:.6rem .1rem .3rem;display:flex;align-items:center;gap:.4rem;}
+
+/* ══ STRIP ══ */
+.strip-wrap{display:flex;align-items:center;justify-content:center;gap:4px;flex-wrap:nowrap;overflow-x:auto;padding:.4rem .2rem;}
+.cell{display:flex;flex-direction:column;align-items:center;justify-content:center;width:clamp(46px,10vw,68px);height:clamp(46px,10vw,68px);border-radius:12px;border:2.5px solid #d1d5db;background:#f9fafb;font-family:'Baloo 2',cursive;font-size:clamp(.75rem,2vw,1rem);font-weight:800;color:#374151;cursor:default;transition:all .25s;flex-shrink:0;position:relative;user-select:none;}
+.cell.supercell{background:#fef9c3;border-color:#f59e0b;color:#92400e;box-shadow:0 0 10px rgba(245,158,11,.35);}
+.cell.supercell::after{content:'⭐';position:absolute;top:-10px;right:-8px;font-size:.75rem;}
+.cell.not-sc{background:#fee2e2;border-color:#fca5a5;color:#991b1b;}
+.cell.end-cell{border-style:dashed;}
+.cell .cell-label{font-size:.48rem;font-weight:800;color:#9ca3af;margin-top:1px;}
+.cell.clickable{cursor:pointer;}
+.cell.clickable:hover{transform:scale(1.06);border-color:#16a34a;}
+.cell.selected-yes{background:#dcfce7;border-color:#22c55e;color:#166534;box-shadow:0 0 8px rgba(34,197,94,.35);}
+.cell.selected-no{background:#fee2e2;border-color:#ef4444;color:#991b1b;}
+
+/* arrows between cells */
+.arrow{font-size:.7rem;color:#9ca3af;flex-shrink:0;}
+
+/* ══ GRID ══ */
+.grid-outer{overflow-x:auto;padding:.3rem .1rem;}
+.grid-table{border-collapse:separate;border-spacing:4px;margin:0 auto;}
+.gcell{width:clamp(50px,11vw,72px);height:clamp(50px,11vw,72px);border-radius:10px;border:2.5px solid #d1d5db;background:#f9fafb;font-family:'Baloo 2',cursive;font-size:clamp(.72rem,1.8vw,.95rem);font-weight:800;color:#374151;text-align:center;vertical-align:middle;cursor:default;transition:all .25s;position:relative;user-select:none;}
+.gcell.supercell{background:#fef9c3;border-color:#f59e0b;color:#92400e;box-shadow:0 0 10px rgba(245,158,11,.3);}
+.gcell.supercell::after{content:'⭐';position:absolute;top:-9px;right:-7px;font-size:.7rem;}
+.gcell.not-sc{background:#fee2e2;border-color:#fca5a5;color:#991b1b;}
+.gcell.clickable{cursor:pointer;}
+.gcell.clickable:hover{transform:scale(1.06);border-color:#16a34a;}
+.gcell.selected-yes{background:#dcfce7;border-color:#22c55e;color:#166534;}
+.gcell.selected-no{background:#fee2e2;border-color:#ef4444;color:#991b1b;}
+
+/* FEEDBACK */
+.fb{margin:.5rem .1rem 0;border-radius:10px;padding:.5rem .8rem;font-weight:800;font-size:.8rem;display:none;align-items:center;gap:.35rem;line-height:1.3;flex-wrap:wrap;}
+.fb.show{display:flex;}
+.fb.fok{background:#dcfce7;color:#166534;border:1.5px solid #86efac;}
+.fb.fno{background:#fee2e2;color:#991b1b;border:1.5px solid #fca5a5;}
+.fb.finfo{background:#dbeafe;color:#1e40af;border:1.5px solid #93c5fd;}
+
+/* SCORE */
+.sbar{display:flex;gap:.5rem;flex-wrap:wrap;justify-content:center;padding:.3rem .1rem .4rem;}
+.spill{display:flex;align-items:center;gap:.3rem;background:#f0fdf4;border-radius:50px;padding:.22rem .65rem;font-weight:800;font-size:.74rem;border:1.5px solid #bbf7d0;}
+.spill .n{font-family:'Baloo 2',cursive;font-size:.92rem;}
+.sc .n{color:#16a34a;}.sw .n{color:#ef4444;}.sq .n{color:#f59e0b;}
+
+/* BUTTONS */
+.btn{font-family:'Baloo 2',cursive;font-size:.82rem;font-weight:700;border:none;border-radius:50px;padding:.42rem 1.1rem;cursor:pointer;transition:transform .14s,box-shadow .14s;margin:.2rem;}
+.btn:hover{transform:scale(1.04);}
+.btn-green{background:linear-gradient(135deg,#16a34a,#4ade80);color:#fff;box-shadow:0 3px 8px rgba(22,163,74,.3);}
+.btn-amber{background:linear-gradient(135deg,#f59e0b,#fcd34d);color:#fff;box-shadow:0 3px 8px rgba(245,158,11,.3);}
+.btn-gray{background:#fff;color:#6b7280;border:1.5px solid #d1d5db;}
+.btn-row{display:flex;flex-wrap:wrap;justify-content:center;gap:.3rem;margin-top:.55rem;}
+
+/* FILL PUZZLE */
+.fill-input{font-family:'Baloo 2',cursive;font-size:clamp(.75rem,2vw,1rem);font-weight:800;width:clamp(46px,10vw,68px);height:clamp(46px,10vw,68px);border-radius:12px;border:2.5px solid #d1d5db;background:#f9fafb;text-align:center;color:#374151;outline:none;transition:border-color .2s;flex-shrink:0;}
+.fill-input:focus{border-color:#16a34a;background:#f0fdf4;}
+.fill-input.locked{background:#e5e7eb;color:#6b7280;cursor:default;pointer-events:none;}
+.fill-input.sc-correct{background:#fef9c3;border-color:#f59e0b;color:#92400e;}
+.fill-input.sc-wrong{background:#fee2e2;border-color:#ef4444;color:#991b1b;}
+.fill-input.plain-ok{background:#f0fdf4;border-color:#86efac;color:#166534;}
+
+/* LEARN CARDS */
+.lcard{background:#fff;border-radius:12px;padding:.7rem .9rem;margin-bottom:.6rem;border:1.5px solid #bbf7d0;box-shadow:0 2px 8px rgba(22,163,74,.07);}
+.lcard h3{font-family:'Baloo 2',cursive;font-size:.9rem;font-weight:800;color:#16a34a;margin-bottom:.3rem;}
+.lcard p{font-size:.74rem;color:#4b5563;font-weight:600;line-height:1.45;margin-top:.3rem;}
+.lcard p strong{color:#14532d;}
+.mini-strip{display:flex;align-items:center;gap:4px;justify-content:center;background:#f0fdf4;border-radius:8px;padding:.45rem .35rem;margin:.3rem 0;flex-wrap:wrap;}
+.mc{display:flex;flex-direction:column;align-items:center;justify-content:center;width:52px;height:52px;border-radius:10px;border:2px solid #d1d5db;background:#f9fafb;font-family:'Baloo 2',cursive;font-size:.82rem;font-weight:800;color:#374151;flex-shrink:0;position:relative;}
+.mc.msc{background:#fef9c3;border-color:#f59e0b;color:#92400e;}
+.mc.msc::after{content:'⭐';position:absolute;top:-9px;right:-7px;font-size:.65rem;}
+.mc.mnsc{background:#fee2e2;border-color:#fca5a5;color:#991b1b;}
+.mc .mlbl{font-size:.44rem;font-weight:800;color:#9ca3af;margin-top:1px;}
+.mini-grid{border-collapse:separate;border-spacing:3px;margin:.3rem auto;}
+.mgc{width:52px;height:52px;border-radius:8px;border:2px solid #d1d5db;background:#f9fafb;font-family:'Baloo 2',cursive;font-size:.78rem;font-weight:800;color:#374151;text-align:center;vertical-align:middle;position:relative;}
+.mgc.msc{background:#fef9c3;border-color:#f59e0b;color:#92400e;}
+.mgc.msc::after{content:'⭐';position:absolute;top:-8px;right:-6px;font-size:.6rem;}
+.mgc.mnsc{background:#fee2e2;border-color:#fca5a5;color:#991b1b;}
+.marr{font-size:.65rem;color:#9ca3af;flex-shrink:0;}
+
+/* END */
+.endsc{background:#fff;border-radius:14px;padding:1.3rem 1rem;margin:.3rem .1rem;text-align:center;box-shadow:0 4px 18px rgba(22,163,74,.1);border:1.5px solid #bbf7d0;display:none;}
+.endsc.show{display:block;}
+.endsc .tr{font-size:2.8rem;display:block;margin-bottom:.3rem;}
+.endsc h2{font-family:'Baloo 2',cursive;font-size:1.5rem;font-weight:800;color:#16a34a;}
+.endsc .sb{font-family:'Baloo 2',cursive;font-size:2.4rem;font-weight:800;color:#f59e0b;margin:.2rem 0;}
+.endsc p{color:#6b7280;font-size:.85rem;font-weight:600;}
+
+/* CONFETTI */
+.cf{position:fixed;pointer-events:none;z-index:9999;animation:cfall var(--d) var(--dl) ease-in forwards;}
+@keyframes cfall{0%{opacity:1;transform:translateY(0) rotate(0);}100%{opacity:0;transform:translateY(100vh) rotate(720deg);}}
+
+/* KEY FACTS */
+.fact-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:.5rem;margin:.4rem .1rem;}
+.fact{background:#f0fdf4;border:1.5px solid #86efac;border-radius:10px;padding:.5rem .7rem;font-size:.73rem;font-weight:700;color:#166534;line-height:1.45;}
+.fact .fi{font-size:1.2rem;display:block;margin-bottom:.2rem;}
+.fact strong{color:#14532d;}
+</style>
+</head>
+<body>
+<div class="clouds"><div class="cloud c1"></div><div class="cloud c2"></div><div class="cloud c3"></div></div>
+
+<div class="wrapper">
+<div class="hdr">
+  <h1>🌟 Super<span>Cell</span> Explorer</h1>
+  <p>Class 6 Maths · Chapter 3 · Number Play</p>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="switchTab('learn')">📚 Learn</button>
+  <button class="tab" onclick="switchTab('strip')">🔢 Strip Quiz</button>
+  <button class="tab" onclick="switchTab('grid')">🔲 Grid Quiz</button>
+  <button class="tab" onclick="switchTab('fill')">✏️ Fill Puzzle</button>
+</div>
+
+<!-- ══════════ LEARN ══════════ -->
+<div class="panel active" id="panel-learn">
+  <div class="rbox"><strong>⭐ What is a Supercell?</strong> A cell is a <strong>supercell</strong> if its number is <strong>greater than ALL its adjacent (neighbouring) cells</strong>. Adjacent means sharing a side — left, right (and in a grid: top, bottom too). End cells have only 1 neighbour.</div>
+
+  <div class="fact-grid">
+    <div class="fact"><span class="fi">🏆</span><strong>Largest number</strong> is ALWAYS a supercell — it beats every neighbour!</div>
+    <div class="fact"><span class="fi">🚫</span><strong>Smallest number</strong> can NEVER be a supercell — neighbours always beat it!</div>
+    <div class="fact"><span class="fi">🔗</span>Two <strong>adjacent cells</strong> can NEVER both be supercells at the same time!</div>
+    <div class="fact"><span class="fi">📊</span><strong>Max supercells</strong> in n cells = ⌈n/2⌉ (every alternate cell).</div>
+  </div>
+
+  <div id="concept-list"></div>
+</div>
+
+<!-- ══════════ STRIP QUIZ ══════════ -->
+<div class="panel" id="panel-strip">
+  <div class="sbar">
+    <div class="spill sc">✅ Correct <span class="n" id="sqsc">0</span></div>
+    <div class="spill sw">❌ Wrong <span class="n" id="sqsw">0</span></div>
+    <div class="spill sq">📝 Q <span class="n" id="sqsq">1</span>/10</div>
+  </div>
+  <div class="rbox"><strong>Task:</strong> Look at the strip below. Click on the cells that are <strong>supercells</strong> (⭐ greater than ALL their neighbours). When done, click <strong>Check</strong>!</div>
+  <div class="sec-title">🔢 Number Strip</div>
+  <div class="strip-wrap" id="strip-display"></div>
+  <div class="fb" id="strip-fb"></div>
+  <div class="btn-row">
+    <button class="btn btn-green" onclick="checkStrip()">✅ Check</button>
+    <button class="btn btn-gray" onclick="resetStripSel()">🔄 Reset Selection</button>
+    <button class="btn btn-amber" onclick="nextStrip()">⏭ Next</button>
+  </div>
+  <div class="endsc" id="strip-end">
+    <span class="tr" id="setr">🏆</span><h2 id="setitle"></h2>
+    <div class="sb" id="sescore"></div><p id="semsg"></p>
+    <button class="btn btn-green" style="margin-top:.7rem" onclick="startStrip()">🎮 Play Again!</button>
+  </div>
+</div>
+
+<!-- ══════════ GRID QUIZ ══════════ -->
+<div class="panel" id="panel-grid">
+  <div class="sbar">
+    <div class="spill sc">✅ Correct <span class="n" id="gqsc">0</span></div>
+    <div class="spill sw">❌ Wrong <span class="n" id="gqsw">0</span></div>
+    <div class="spill sq">📝 Q <span class="n" id="gqsq">1</span>/8</div>
+  </div>
+  <div class="rbox blue"><strong>Task:</strong> In the grid, a cell is a supercell if it is greater than its <strong>left, right, top, and bottom</strong> neighbours. Click all supercells then check!</div>
+  <div class="sec-title">🔲 Number Grid</div>
+  <div class="grid-outer"><table class="grid-table" id="grid-display"></table></div>
+  <div class="fb" id="grid-fb"></div>
+  <div class="btn-row">
+    <button class="btn btn-green" onclick="checkGrid()">✅ Check</button>
+    <button class="btn btn-gray" onclick="resetGridSel()">🔄 Reset Selection</button>
+    <button class="btn btn-amber" onclick="nextGrid()">⏭ Next</button>
+  </div>
+  <div class="endsc" id="grid-end">
+    <span class="tr" id="getr">🏆</span><h2 id="getitle"></h2>
+    <div class="sb" id="gescore"></div><p id="gemsg"></p>
+    <button class="btn btn-green" style="margin-top:.7rem" onclick="startGrid()">🎮 Play Again!</button>
+  </div>
+</div>
+
+<!-- ══════════ FILL PUZZLE ══════════ -->
+<div class="panel" id="panel-fill">
+  <div class="rbox amber"><strong>✏️ Fill Puzzle:</strong> Some cells are given (grey, locked). Fill the <strong>white cells</strong> with numbers so that the <strong>⭐ starred cells become supercells</strong> and the ❌ cells do NOT. Use numbers 100–999, no repeats!</div>
+  <div class="sec-title" id="fill-title">Puzzle 1 / 6</div>
+  <div class="strip-wrap" id="fill-display"></div>
+  <div class="fb" id="fill-fb"></div>
+  <div class="btn-row">
+    <button class="btn btn-green" onclick="checkFill()">✅ Check Answer</button>
+    <button class="btn btn-gray" onclick="resetFill()">🔄 Clear</button>
+    <button class="btn btn-amber" onclick="nextFill()">⏭ Next Puzzle</button>
+  </div>
+  <div style="text-align:center;margin-top:.4rem;">
+    <button class="btn btn-gray" onclick="hintFill()" style="font-size:.74rem;">💡 Give me a hint</button>
+  </div>
+</div>
+</div><!-- wrapper -->
+
+<script>
+/* ═══ UTILS ═══ */
+function rnd(a,b){return Math.floor(Math.random()*(b-a+1))+a;}
+function shuf(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=rnd(0,i);[b[i],b[j]]=[b[j],b[i]];}return b;}
+function confetti(n){
+  const cl=['#16a34a','#f59e0b','#3b82f6','#f472b6','#a78bfa','#34d399'];
+  for(let i=0;i<n;i++){
+    const el=document.createElement('div');el.className='cf';
+    el.style.cssText=`left:${Math.random()*100}vw;top:-10px;background:${cl[rnd(0,cl.length-1)]};width:${rnd(6,11)}px;height:${rnd(6,11)}px;border-radius:${Math.random()>.5?'50%':'2px'};--d:${(.8+Math.random()*.8).toFixed(2)}s;--dl:${(Math.random()*.4).toFixed(2)}s;`;
+    document.body.appendChild(el);setTimeout(()=>el.remove(),1900);
+  }
+}
+function switchTab(id){
+  document.querySelectorAll('.tab').forEach((t,i)=>{t.classList.toggle('active',['learn','strip','grid','fill'][i]===id);});
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+}
+function isStripSC(arr,i){return(i===0||arr[i]>arr[i-1])&&(i===arr.length-1||arr[i]>arr[i+1]);}
+function isGridSC(grid,r,c,rows,cols){
+  const v=grid[r][c];
+  if(r>0&&grid[r-1][c]>=v)return false;
+  if(r<rows-1&&grid[r+1][c]>=v)return false;
+  if(c>0&&grid[r][c-1]>=v)return false;
+  if(c<cols-1&&grid[r][c+1]>=v)return false;
+  return true;
+}
+
+/* ═══ LEARN ═══ */
+const CONCEPTS=[
+  {
+    title:'Example 1 — A Simple Strip',
+    strip:[45,62,55,80,30],
+    explanation:'In this strip, <strong>62</strong> is a supercell because 62 > 45 (left) AND 62 > 55 (right). <strong>80</strong> is a supercell because 80 > 55 (left) AND 80 > 30 (right). <strong>45</strong> is an END cell — it only checks the right neighbour (55). Since 45 < 55, it is NOT a supercell. <strong>30</strong> is an END cell — it only checks the left (80). Since 30 < 80, NOT a supercell.',
+    type:'strip'
+  },
+  {
+    title:'Example 2 — End Cell Rule',
+    strip:[511,453,678,120],
+    explanation:'<strong>511</strong> is an end cell. Its only neighbour is 453. Since 511 > 453, it IS a supercell! ⭐ <strong>678</strong> is a middle cell. It checks 453 (left) and 120 (right). Since 678 > 453 AND 678 > 120, it IS a supercell! ⭐ Notice: <strong>two non-adjacent cells</strong> can both be supercells.',
+    type:'strip'
+  },
+  {
+    title:'Example 3 — Two Adjacent Cells CANNOT Both be Supercells',
+    strip:[300,700,650,200],
+    explanation:'Can 700 and 650 BOTH be supercells? No! For 700 to be a supercell, its right neighbour (650) must be smaller — ✅ it is. But for 650 to be a supercell, its left neighbour (700) must be smaller. 650 is NOT > 700 — so 650 fails! <strong>Adjacent cells can never both be supercells.</strong>',
+    type:'strip'
+  },
+  {
+    title:'Example 4 — A 2D Grid (rows and columns)',
+    grid:[[321,512,100],[678,450,890],[200,334,150]],
+    explanation:'In a grid, a supercell must beat its <strong>left, right, top, AND bottom</strong> neighbours. <strong>512</strong>: checks right(100)✅, left(321)✅, bottom(450)✅ — no top. It IS a supercell! ⭐ <strong>890</strong>: checks left(450)✅, top(100)✅, bottom(150)✅ — no right. It IS a supercell! ⭐ <strong>678</strong>: checks right(450)✅, top(321)✅, bottom(200)✅ — no left. It IS a supercell! ⭐',
+    type:'grid'
+  },
+  {
+    title:'Example 5 — Maximum Supercells Strategy',
+    strip:[900,100,800,200,700],
+    explanation:'To get the MAXIMUM number of supercells, use an <strong>alternate high-low pattern</strong>! Here: 900 (high), 100 (low), 800 (high), 200 (low), 700 (high). All three high numbers are supercells! In 5 cells you can get at most ⌈5/2⌉ = <strong>3 supercells</strong>. In 4 cells: at most <strong>2</strong>. In 6 cells: at most <strong>3</strong>.',
+    type:'strip'
+  },
+  {
+    title:'Example 6 — Second Smallest CAN be a Supercell!',
+    strip:[475,489,600,550,420],
+    explanation:'<strong>489</strong> is the second smallest number! But check: 489 > 475 (left neighbour) ✅ AND 489 < 600 (right neighbour) ✗. So 489 is NOT a supercell here. But if we arrange: [<strong>475, 489</strong>, 400 …] then 489 > 475 and 489 > 400 → it IS a supercell! The second smallest CAN be a supercell if its specific neighbours are both smaller.',
+    type:'strip'
+  },
+];
+
+function buildLearn(){
+  document.getElementById('concept-list').innerHTML=CONCEPTS.map(c=>{
+    let visual='';
+    if(c.type==='strip'){
+      const arr=c.strip;
+      visual='<div class="mini-strip">';
+      arr.forEach((v,i)=>{
+        const sc=isStripSC(arr,i);
+        const isEnd=(i===0||i===arr.length-1);
+        visual+=`<div class="mc${sc?' msc':' mnsc'}${isEnd?' end':''}">${v}<div class="mlbl">${isEnd?'END':'MID'}</div></div>`;
+        if(i<arr.length-1)visual+='<div class="marr">▶</div>';
+      });
+      visual+='</div>';
+    } else {
+      const g=c.grid;const rows=g.length,cols=g[0].length;
+      visual='<table class="mini-grid">';
+      g.forEach((row,r)=>{
+        visual+='<tr>';
+        row.forEach((v,cc)=>{
+          const sc=isGridSC(g,r,cc,rows,cols);
+          visual+=`<td class="mgc${sc?' msc':' mnsc'}">${v}</td>`;
+        });
+        visual+='</tr>';
+      });
+      visual+='</table>';
+    }
+    return`<div class="lcard"><h3>${c.title}</h3>${visual}<p>${c.explanation}</p></div>`;
+  }).join('');
+}
+
+/* ═══ STRIP QUIZ ═══ */
+let sqCor=0,sqWr=0,sqIdx=0,sqDone=false,sqArr=[],sqSelected=[];
+const SQ_TOTAL=10;
+
+function genStrip(){
+  const n=rnd(4,7);
+  const nums=[];
+  while(nums.length<n){const v=rnd(100,999);if(!nums.includes(v))nums.push(v);}
+  sqArr=nums;sqSelected=Array(n).fill(false);
+}
+
+function renderStrip(showAnswer){
+  const el=document.getElementById('strip-display');el.innerHTML='';
+  sqArr.forEach((v,i)=>{
+    const sc=isStripSC(sqArr,i);
+    const isEnd=(i===0||i===sqArr.length-1);
+    const div=document.createElement('div');
+    let cls='cell clickable';
+    if(showAnswer){
+      cls+= sc?' supercell':' not-sc';
+    } else {
+      if(sqSelected[i])cls+=' selected-yes';
+    }
+    if(isEnd)cls+=' end-cell';
+    div.className=cls;
+    div.innerHTML=`${v}<div class="cell-label">${isEnd?'END':'MID'}</div>`;
+    if(!showAnswer)div.onclick=()=>{sqSelected[i]=!sqSelected[i];renderStrip(false);};
+    el.appendChild(div);
+    if(i<sqArr.length-1){const arr=document.createElement('div');arr.className='arrow';arr.textContent='▶';el.appendChild(arr);}
+  });
+}
+
+function checkStrip(){
+  if(sqDone)return;sqDone=true;
+  const correct=sqArr.map((_,i)=>isStripSC(sqArr,i));
+  const allRight=correct.every((_,i)=>correct[i]===sqSelected[i]);
+  const fb=document.getElementById('strip-fb');
+  if(allRight){
+    sqCor++;
+    fb.className='fb fok show';
+    const scCount=correct.filter(Boolean).length;
+    fb.innerHTML=`⭐ <strong>Correct!</strong> There ${scCount===1?'is':'are'} ${scCount} supercell${scCount!==1?'s':''} in this strip!`;
+    confetti(7);
+  } else {
+    sqWr++;
+    const missed=correct.filter((c,i)=>c&&!sqSelected[i]).length;
+    const extra=correct.filter((c,i)=>!c&&sqSelected[i]).length;
+    fb.className='fb fno show';
+    fb.innerHTML=`❌ Not quite! ${missed>0?`You missed ${missed} supercell${missed>1?'s':''}.`:''} ${extra>0?`${extra} cell${extra>1?'s':''} you selected ${extra>1?'are':'is'} not a supercell.`:''} See the correct answer highlighted below.`;
+  }
+  document.getElementById('sqsc').textContent=sqCor;
+  document.getElementById('sqsw').textContent=sqWr;
+  renderStrip(true);
+  if(sqIdx>=SQ_TOTAL)setTimeout(()=>showStripEnd(),1200);
+}
+
+function resetStripSel(){sqSelected=Array(sqArr.length).fill(false);renderStrip(false);document.getElementById('strip-fb').className='fb';}
+
+function nextStrip(){
+  if(sqIdx>=SQ_TOTAL){showStripEnd();return;}
+  sqIdx++;document.getElementById('sqsq').textContent=Math.min(sqIdx,SQ_TOTAL);
+  sqDone=false;genStrip();renderStrip(false);document.getElementById('strip-fb').className='fb';
+}
+
+function showStripEnd(){
+  document.getElementById('strip-end').classList.add('show');
+  const pct=sqCor/SQ_TOTAL;
+  let tr='🏆',ti='',mg='';
+  if(pct===1){tr='🥇';ti='Perfect!';mg='Every supercell identified correctly!';}
+  else if(pct>=.8){tr='🌟';ti='Excellent!';mg=`${sqCor}/${SQ_TOTAL} — Great supercell spotting!`;}
+  else if(pct>=.6){tr='👍';ti='Good Job!';mg=`${sqCor}/${SQ_TOTAL} — Check the Learn tab for tips!`;}
+  else{tr='💪';ti='Keep Trying!';mg=`${sqCor}/${SQ_TOTAL} — Study the Learn tab and try again!`;}
+  document.getElementById('setr').textContent=tr;document.getElementById('setitle').textContent=ti;
+  document.getElementById('sescore').textContent=`${sqCor}/${SQ_TOTAL}`;document.getElementById('semsg').textContent=mg;
+  if(pct>=.8)confetti(20);
+}
+
+function startStrip(){
+  sqCor=0;sqWr=0;sqIdx=1;sqDone=false;
+  document.getElementById('strip-end').classList.remove('show');
+  document.getElementById('sqsc').textContent=0;document.getElementById('sqsw').textContent=0;document.getElementById('sqsq').textContent=1;
+  genStrip();renderStrip(false);document.getElementById('strip-fb').className='fb';
+}
+
+/* ═══ GRID QUIZ ═══ */
+let gqCor=0,gqWr=0,gqIdx=0,gqDone=false,gqGrid=[],gqSel=[],GQ_TOTAL=8;
+
+function genGrid(){
+  const rows=rnd(2,3),cols=rnd(3,4);
+  const used=[];gqGrid=[];gqSel=[];
+  for(let r=0;r<rows;r++){
+    const row=[];const selRow=[];
+    for(let c=0;c<cols;c++){
+      let v;do{v=rnd(100,999);}while(used.includes(v));
+      used.push(v);row.push(v);selRow.push(false);
+    }
+    gqGrid.push(row);gqSel.push(selRow);
+  }
+}
+
+function renderGrid(showAnswer){
+  const el=document.getElementById('grid-display');el.innerHTML='';
+  const rows=gqGrid.length,cols=gqGrid[0].length;
+  gqGrid.forEach((row,r)=>{
+    const tr=document.createElement('tr');
+    row.forEach((v,c)=>{
+      const sc=isGridSC(gqGrid,r,c,rows,cols);
+      const td=document.createElement('td');
+      let cls='gcell clickable';
+      if(showAnswer){cls+= sc?' supercell':' not-sc';}
+      else if(gqSel[r][c])cls+=' selected-yes';
+      td.className=cls;td.textContent=v;
+      if(!showAnswer)td.onclick=()=>{gqSel[r][c]=!gqSel[r][c];renderGrid(false);};
+      tr.appendChild(td);
+    });
+    el.appendChild(tr);
+  });
+}
+
+function checkGrid(){
+  if(gqDone)return;gqDone=true;
+  const rows=gqGrid.length,cols=gqGrid[0].length;
+  let allRight=true;
+  for(let r=0;r<rows;r++)for(let c=0;c<cols;c++)if(isGridSC(gqGrid,r,c,rows,cols)!==gqSel[r][c]){allRight=false;break;}
+  const fb=document.getElementById('grid-fb');
+  if(allRight){
+    gqCor++;fb.className='fb fok show';
+    let cnt=0;for(let r=0;r<rows;r++)for(let c=0;c<cols;c++)if(isGridSC(gqGrid,r,c,rows,cols))cnt++;
+    fb.innerHTML=`⭐ <strong>Correct!</strong> This grid has ${cnt} supercell${cnt!==1?'s':''}!`;confetti(8);
+  } else {
+    gqWr++;fb.className='fb fno show';fb.innerHTML=`❌ Not quite! Check: a grid supercell must beat ALL 4 neighbours (or fewer at edges). See correct answer below.`;
+  }
+  document.getElementById('gqsc').textContent=gqCor;document.getElementById('gqsw').textContent=gqWr;
+  renderGrid(true);
+  if(gqIdx>=GQ_TOTAL)setTimeout(()=>showGridEnd(),1200);
+}
+
+function resetGridSel(){const rows=gqGrid.length,cols=gqGrid[0].length;gqSel=Array.from({length:rows},()=>Array(cols).fill(false));renderGrid(false);document.getElementById('grid-fb').className='fb';}
+
+function nextGrid(){
+  if(gqIdx>=GQ_TOTAL){showGridEnd();return;}
+  gqIdx++;document.getElementById('gqsq').textContent=Math.min(gqIdx,GQ_TOTAL);
+  gqDone=false;genGrid();renderGrid(false);document.getElementById('grid-fb').className='fb';
+}
+
+function showGridEnd(){
+  document.getElementById('grid-end').classList.add('show');
+  const pct=gqCor/GQ_TOTAL;
+  let tr='🏆',ti='',mg='';
+  if(pct===1){tr='🥇';ti='Perfect Grid Master!';mg='Every grid supercell found!';}
+  else if(pct>=.75){tr='🌟';ti='Excellent!';mg=`${gqCor}/${GQ_TOTAL} — Great work on grids!`;}
+  else{tr='💪';ti='Keep Trying!';mg=`${gqCor}/${GQ_TOTAL} — Remember: check all 4 directions!`;}
+  document.getElementById('getr').textContent=tr;document.getElementById('getitle').textContent=ti;
+  document.getElementById('gescore').textContent=`${gqCor}/${GQ_TOTAL}`;document.getElementById('gemsg').textContent=mg;
+  if(pct>=.75)confetti(20);
+}
+
+function startGrid(){
+  gqCor=0;gqWr=0;gqIdx=1;gqDone=false;
+  document.getElementById('grid-end').classList.remove('show');
+  document.getElementById('gqsc').textContent=0;document.getElementById('gqsw').textContent=0;document.getElementById('gqsq').textContent=1;
+  genGrid();renderGrid(false);document.getElementById('grid-fb').className='fb';
+}
+
+/* ═══ FILL PUZZLE ═══ */
+/*
+  Each puzzle: an array of cells.
+  Each cell: {value: number|null, locked: bool, mustBeSC: bool|null (null = don't care)}
+  Student fills empty cells. We check: locked cells fixed, starred cells must be supercell, x-marked must not be.
+*/
+const FILL_PUZZLES=[
+  {
+    title:'Puzzle 1 — Make the starred cells supercells!',
+    cells:[
+      {v:null,locked:false,goal:'sc'},
+      {v:500,locked:true,goal:null},
+      {v:null,locked:false,goal:'sc'},
+      {v:300,locked:true,goal:null},
+      {v:null,locked:false,goal:'sc'},
+    ],
+    hint:'The starred (⭐) cells need to be bigger than their neighbours. Cell 1 needs to be > 500. Cell 3 needs to be > 500 AND > 300. Cell 5 needs to be > 300. Try numbers like 600, 450, 400!'
+  },
+  {
+    title:'Puzzle 2 — Make only the MIDDLE cell a supercell',
+    cells:[
+      {v:null,locked:false,goal:'not-sc'},
+      {v:null,locked:false,goal:'not-sc'},
+      {v:null,locked:false,goal:'sc'},
+      {v:null,locked:false,goal:'not-sc'},
+      {v:null,locked:false,goal:'not-sc'},
+    ],
+    hint:'For the middle (position 3) to be a supercell, it must be bigger than positions 2 AND 4. For positions 2 and 4 to NOT be supercells, make position 3 bigger than them. Try: 200, 150, 800, 100, 300!'
+  },
+  {
+    title:'Puzzle 3 — Maximum Supercells! (3 out of 5)',
+    cells:[
+      {v:null,locked:false,goal:'sc'},
+      {v:null,locked:false,goal:'not-sc'},
+      {v:null,locked:false,goal:'sc'},
+      {v:null,locked:false,goal:'not-sc'},
+      {v:null,locked:false,goal:'sc'},
+    ],
+    hint:'Use alternate high-low pattern! High numbers at positions 1, 3, 5 and LOW numbers at positions 2 and 4. Try: 700, 100, 800, 200, 600!'
+  },
+  {
+    title:'Puzzle 4 — Second smallest IS a supercell!',
+    cells:[
+      {v:null,locked:false,goal:'sc'},
+      {v:475,locked:true,goal:null},
+      {v:null,locked:false,goal:null},
+      {v:null,locked:false,goal:null},
+      {v:null,locked:false,goal:null},
+    ],
+    hint:'Position 1 (end cell) must be > 475 to be a supercell. Put a number just above 475 — like 489! Then fill the rest freely. The trick: 489 is the second smallest but still beats its ONE neighbour (475)!'
+  },
+  {
+    title:'Puzzle 5 — No supercell is adjacent to another!',
+    cells:[
+      {v:null,locked:false,goal:'sc'},
+      {v:null,locked:false,goal:'not-sc'},
+      {v:null,locked:false,goal:'not-sc'},
+      {v:null,locked:false,goal:'sc'},
+      {v:null,locked:false,goal:'not-sc'},
+      {v:null,locked:false,goal:'not-sc'},
+    ],
+    hint:'Supercells are at positions 1 and 4. They are NOT adjacent (position 2 and 3 sit between them). Make positions 1 and 4 big, and positions 2,3,5,6 smaller than their supercell neighbours!'
+  },
+  {
+    title:'Puzzle 6 — The largest number must be a supercell!',
+    cells:[
+      {v:null,locked:false,goal:null},
+      {v:null,locked:false,goal:null},
+      {v:null,locked:false,goal:'sc'},
+      {v:null,locked:false,goal:null},
+      {v:null,locked:false,goal:null},
+    ],
+    hint:'Put the LARGEST number you choose in position 3 (the starred cell). Since it is largest, it will always beat both neighbours! Fill the other cells with any smaller numbers. Remember: the largest number is ALWAYS a supercell.'
+  },
+];
+
+let fillIdx=0,fillCells=[];
+
+function loadFill(){
+  const puz=FILL_PUZZLES[fillIdx];
+  document.getElementById('fill-title').textContent=`${puz.title} (${fillIdx+1}/${FILL_PUZZLES.length})`;
+  fillCells=puz.cells.map(c=>({...c}));
+  renderFill();
+  document.getElementById('fill-fb').className='fb';
+}
+
+function renderFill(){
+  const el=document.getElementById('fill-display');el.innerHTML='';
+  fillCells.forEach((c,i)=>{
+    // Goal badge
+    const badge=document.createElement('div');
+    badge.style.cssText='display:flex;flex-direction:column;align-items:center;gap:2px;flex-shrink:0;';
+    const goalDiv=document.createElement('div');
+    goalDiv.style.cssText='font-size:.65rem;font-weight:800;height:18px;display:flex;align-items:center;justify-content:center;';
+    if(c.goal==='sc')goalDiv.textContent='⭐ SC';
+    else if(c.goal==='not-sc')goalDiv.textContent='❌ Not SC';
+    else goalDiv.textContent='';
+
+    if(c.locked){
+      const div=document.createElement('div');
+      div.className='cell locked';
+      div.style.cssText='display:flex;flex-direction:column;align-items:center;justify-content:center;width:clamp(46px,10vw,68px);height:clamp(46px,10vw,68px);border-radius:12px;border:2.5px solid #d1d5db;background:#e5e7eb;font-family:Baloo 2,cursive;font-size:clamp(.75rem,2vw,1rem);font-weight:800;color:#6b7280;flex-shrink:0;';
+      div.textContent=c.v;
+      badge.appendChild(goalDiv);badge.appendChild(div);
+    } else {
+      const inp=document.createElement('input');
+      inp.type='number';inp.className='fill-input';inp.min=100;inp.max=999;
+      inp.placeholder='?';
+      if(c.v!==null)inp.value=c.v;
+      inp.oninput=()=>{fillCells[i].v=inp.value===''?null:parseInt(inp.value);};
+      badge.appendChild(goalDiv);badge.appendChild(inp);
+    }
+    el.appendChild(badge);
+    if(i<fillCells.length-1){const arr=document.createElement('div');arr.className='arrow';arr.style.marginTop='18px';arr.textContent='▶';el.appendChild(arr);}
+  });
+}
+
+function checkFill(){
+  const vals=fillCells.map(c=>c.v);
+  // Check all filled
+  if(vals.some(v=>v===null||isNaN(v)||v<100||v>999)){
+    const fb=document.getElementById('fill-fb');fb.className='fb fno show';fb.innerHTML='⚠️ Please fill ALL cells with numbers between <strong>100 and 999</strong>!';return;
+  }
+  // Check no repeats
+  const uniq=new Set(vals);
+  if(uniq.size!==vals.length){
+    const fb=document.getElementById('fill-fb');fb.className='fb fno show';fb.innerHTML='⚠️ <strong>No repeats allowed!</strong> Each number must be unique.';return;
+  }
+  // Check goals
+  const arr=vals.map(v=>({height:v}));
+  let errors=[];
+  fillCells.forEach((c,i)=>{
+    if(!c.goal)return;
+    const sc=isStripSC(vals,i);
+    if(c.goal==='sc'&&!sc)errors.push(`Cell ${i+1} (${vals[i]}) should be a supercell but it isn't`);
+    if(c.goal==='not-sc'&&sc)errors.push(`Cell ${i+1} (${vals[i]}) should NOT be a supercell but it is`);
+  });
+  const fb=document.getElementById('fill-fb');
+  if(errors.length===0){
+    fb.className='fb fok show';fb.innerHTML='🎉 <strong>Excellent!</strong> Your arrangement is correct!';confetti(15);
+  } else {
+    fb.className='fb fno show';fb.innerHTML=`❌ ${errors[0]}. Adjust and try again!<br><small style="font-weight:600;opacity:.8">💡 ${FILL_PUZZLES[fillIdx].hint}</small>`;
+  }
+}
+
+function resetFill(){
+  fillCells=FILL_PUZZLES[fillIdx].cells.map(c=>({...c,v:c.locked?c.v:null}));
+  renderFill();document.getElementById('fill-fb').className='fb';
+}
+
+function nextFill(){fillIdx=(fillIdx+1)%FILL_PUZZLES.length;loadFill();}
+
+function hintFill(){
+  const fb=document.getElementById('fill-fb');
+  fb.className='fb finfo show';
+  fb.innerHTML=`💡 <strong>Hint:</strong> ${FILL_PUZZLES[fillIdx].hint}`;
+}
+
+/* ═══ BOOT ═══ */
+buildLearn();
+startStrip();
+startGrid();
+loadFill();
+</script>
+</body>
+</html>
