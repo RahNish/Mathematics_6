@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Number Play 🎮</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Nunito',sans-serif;background:#f0f4ff;color:#1e1b4b;min-height:100vh;overflow-x:hidden;}
+
+/* CLOUDS */
+.clouds{position:fixed;top:0;left:0;right:0;height:160px;pointer-events:none;z-index:0;overflow:hidden;}
+.cloud{position:absolute;background:#fff;border-radius:50px;opacity:.65;}
+.cloud::before,.cloud::after{content:'';position:absolute;background:#fff;border-radius:50%;}
+.c1{width:90px;height:30px;top:18px;left:-110px;animation:drift 22s linear infinite;}
+.c1::before{width:40px;height:40px;top:-18px;left:12px;}
+.c1::after{width:28px;height:28px;top:-12px;left:40px;}
+.c2{width:70px;height:22px;top:42px;left:-90px;animation:drift 32s 9s linear infinite;opacity:.45;}
+.c2::before{width:30px;height:30px;top:-14px;left:10px;}
+.c2::after{width:22px;height:22px;top:-10px;left:32px;}
+.c3{width:110px;height:34px;top:8px;left:-130px;animation:drift 27s 15s linear infinite;opacity:.5;}
+.c3::before{width:50px;height:50px;top:-22px;left:16px;}
+.c3::after{width:34px;height:34px;top:-16px;left:54px;}
+@keyframes drift{to{transform:translateX(calc(100vw + 220px));}}
+
+/* WRAPPER */
+.wrapper{position:relative;z-index:2;max-width:900px;margin:0 auto;padding:0 0 2rem;}
+
+/* TOP HEADER */
+.top-hdr{text-align:center;padding:1.4rem 1rem .6rem;}
+.top-hdr h1{font-family:'Baloo 2',cursive;font-size:clamp(1.8rem,5vw,3rem);font-weight:800;color:#7c6ff7;line-height:1.1;}
+.top-hdr h1 span{color:#f472b6;}
+.top-hdr p{color:#6b7280;font-size:.9rem;font-weight:700;margin-top:.2rem;}
+
+/* TABS */
+.tabs{display:flex;background:#fff;border-radius:16px 16px 0 0;border:2px solid #e0e7ff;border-bottom:none;margin:0 .5rem;overflow:hidden;}
+.tab{flex:1;padding:.65rem .3rem;font-family:'Baloo 2',cursive;font-size:.88rem;font-weight:700;border:none;background:transparent;cursor:pointer;color:#9ca3af;transition:all .2s;border-bottom:3px solid transparent;}
+.tab.active{color:#7c6ff7;background:#f5f3ff;border-bottom:3px solid #7c6ff7;}
+.tab:hover:not(.active){background:#fafafa;color:#6b7280;}
+
+/* PANEL */
+.panel{display:none;background:#fff;border:2px solid #e0e7ff;border-top:none;border-radius:0 0 16px 16px;margin:0 .5rem;padding:.6rem .5rem .8rem;}
+.panel.active{display:block;}
+
+/* SCORE BAR */
+.sbar{display:flex;gap:.5rem;flex-wrap:wrap;justify-content:center;padding:.4rem .2rem .3rem;}
+.spill{display:flex;align-items:center;gap:.3rem;background:#f8f8ff;border-radius:50px;padding:.25rem .65rem;font-weight:800;font-size:.76rem;border:1.5px solid #e5e7eb;}
+.spill .n{font-family:'Baloo 2',cursive;font-size:.95rem;}
+.sc .n{color:#22c55e;}.sw .n{color:#ef4444;}.ss .n{color:#f59e0b;}.sq .n{color:#7c6ff7;}
+
+/* RULE BOX */
+.rbox{background:#ede9fe;border:1.5px solid #c4b5fd;border-radius:12px;padding:.5rem .9rem;margin:.4rem .2rem;font-size:.76rem;color:#4c1d95;font-weight:700;line-height:1.5;}
+.rbox strong{color:#7c6ff7;}
+
+/* STAGE */
+.sout{margin:0 .2rem;}
+.sky{background:linear-gradient(180deg,#bae6fd,#e0f2fe);border-radius:12px 12px 0 0;height:14px;}
+.scard{background:#f8faff;border-left:2px solid #e0e7ff;border-right:2px solid #e0e7ff;padding:.4rem .3rem 0;overflow-x:auto;}
+.stage{display:flex;align-items:flex-end;justify-content:center;gap:clamp(3px,1.6vw,18px);min-height:200px;padding:.3rem .1rem 0;flex-wrap:nowrap;}
+.grass{background:linear-gradient(180deg,#86efac,#4ade80);height:12px;border-left:2px solid #e0e7ff;border-right:2px solid #e0e7ff;}
+.soil{background:#c8a96e;height:8px;border-radius:0 0 12px 12px;border-left:2px solid #e0e7ff;border-right:2px solid #e0e7ff;margin-bottom:.4rem;}
+
+/* PERSON */
+.pw{display:flex;flex-direction:column;align-items:center;gap:2px;flex-shrink:0;animation:pu .4s cubic-bezier(.34,1.56,.64,1) both;}
+@keyframes pu{from{opacity:0;transform:translateY(18px) scale(.65);}to{opacity:1;transform:translateY(0) scale(1);}}
+.pw.hl .psvg{filter:drop-shadow(0 0 8px rgba(124,111,247,.9));transform:scale(1.1);}
+.psvg{transition:transform .3s,filter .3s;display:block;}
+.hchip{font-size:clamp(.52rem,1.2vw,.7rem);font-weight:800;background:#ede9fe;color:#7c6ff7;border-radius:20px;padding:1px 5px;}
+.ntag{font-size:clamp(.52rem,1.2vw,.7rem);font-weight:700;color:#6b7280;max-width:clamp(36px,6vw,54px);text-overflow:ellipsis;overflow:hidden;white-space:nowrap;text-align:center;}
+.echip{font-size:.5rem;font-weight:800;background:#fce7f3;color:#f472b6;border:1px solid #fbcfe8;border-radius:6px;padding:1px 4px;}
+.nbadge{font-family:'Baloo 2',cursive;font-size:.9rem;font-weight:800;width:26px;height:26px;border-radius:50%;border:2px solid;display:flex;align-items:center;justify-content:center;animation:pu .4s cubic-bezier(.34,1.56,.64,1) both;}
+.nb0{background:#f3f4f6;color:#9ca3af;border-color:#d1d5db;}
+.nb1{background:#dcfce7;color:#16a34a;border-color:#86efac;}
+.nb2{background:#fef3c7;color:#d97706;border-color:#fcd34d;}
+
+/* LEGEND */
+.legend{display:flex;gap:.5rem;flex-wrap:wrap;justify-content:center;padding:.35rem .2rem .1rem;}
+.li{display:flex;align-items:center;gap:.3rem;font-size:.72rem;font-weight:700;color:#6b7280;background:#f8f8ff;border:1.5px solid #e5e7eb;border-radius:20px;padding:.22rem .55rem;}
+.ld{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Baloo 2',cursive;font-size:.78rem;font-weight:800;}
+
+/* QUIZ */
+.qarea{padding:.35rem .2rem 0;}
+.qcard{background:#fff;border-radius:14px;padding:.8rem 1rem;box-shadow:0 3px 14px rgba(100,116,210,.11);border:1.5px solid #e5e7eb;text-align:center;}
+.qemoji{font-size:1.5rem;display:block;margin-bottom:.25rem;}
+.qtext{font-family:'Baloo 2',cursive;font-size:clamp(.9rem,2.8vw,1.1rem);font-weight:700;color:#1e1b4b;line-height:1.35;}
+.qtext strong{color:#7c6ff7;}
+.arow{display:flex;gap:.5rem;align-items:center;justify-content:center;margin-top:.65rem;flex-wrap:wrap;}
+.abtn{font-family:'Baloo 2',cursive;font-size:1.25rem;font-weight:700;width:50px;height:50px;border-radius:13px;border:2.5px solid #e5e7eb;background:#f0f4ff;color:#1e1b4b;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;}
+.abtn:hover:not(:disabled){border-color:#7c6ff7;background:#ede9fe;color:#7c6ff7;transform:scale(1.1);}
+.abtn.sel{border-color:#7c6ff7;background:#7c6ff7;color:#fff;}
+.abtn:disabled{cursor:default;pointer-events:none;}
+.abtn.ok{border-color:#22c55e !important;background:#22c55e !important;color:#fff !important;}
+.abtn.no{border-color:#ef4444 !important;background:#ef4444 !important;color:#fff !important;}
+.fb{margin-top:.55rem;border-radius:11px;padding:.5rem .8rem;font-weight:800;font-size:.82rem;display:none;align-items:center;gap:.35rem;justify-content:center;line-height:1.3;}
+.fb.show{display:flex;}
+.fb.fok{background:#dcfce7;color:#166534;border:1.5px solid #86efac;}
+.fb.fno{background:#fee2e2;color:#991b1b;border:1.5px solid #fca5a5;}
+.bn{margin-top:.55rem;display:none;font-family:'Baloo 2',cursive;font-size:.9rem;font-weight:700;background:linear-gradient(135deg,#7c6ff7,#a78bfa);color:#fff;border:none;border-radius:50px;padding:.48rem 1.5rem;cursor:pointer;box-shadow:0 3px 10px rgba(124,111,247,.35);transition:transform .15s;}
+.bn.show{display:inline-block;}
+.bn:hover{transform:translateY(-2px);}
+.bnnew{display:block;margin:.5rem auto 0;font-family:'Baloo 2',cursive;font-size:.78rem;font-weight:700;background:#fff;color:#7c6ff7;border:1.5px solid #c4b5fd;border-radius:50px;padding:.3rem .95rem;cursor:pointer;transition:background .15s;}
+.bnnew:hover{background:#ede9fe;}
+
+/* END SCREEN */
+.endsc{background:#fff;border-radius:14px;padding:1.4rem 1rem;margin:.3rem .2rem;text-align:center;box-shadow:0 4px 18px rgba(100,116,210,.12);border:1.5px solid #e5e7eb;display:none;}
+.endsc.show{display:block;}
+.endsc .tr{font-size:2.8rem;display:block;margin-bottom:.35rem;}
+.endsc h2{font-family:'Baloo 2',cursive;font-size:1.5rem;font-weight:800;color:#7c6ff7;}
+.endsc .sb{font-family:'Baloo 2',cursive;font-size:2.4rem;font-weight:800;color:#22c55e;margin:.25rem 0;}
+.endsc p{color:#6b7280;font-size:.85rem;font-weight:600;}
+.btr{margin-top:.8rem;font-family:'Baloo 2',cursive;font-size:.95rem;font-weight:700;background:linear-gradient(135deg,#f472b6,#e879f9);color:#fff;border:none;border-radius:50px;padding:.55rem 1.7rem;cursor:pointer;box-shadow:0 3px 10px rgba(244,114,182,.35);transition:transform .15s;}
+.btr:hover{transform:scale(1.05);}
+
+/* PUZZLE */
+.puz-card{background:#fff;border-radius:14px;padding:.8rem .9rem;box-shadow:0 3px 12px rgba(100,116,210,.1);border:1.5px solid #e5e7eb;}
+.puz-title{font-family:'Baloo 2',cursive;font-size:.95rem;font-weight:800;color:#1e1b4b;margin-bottom:.3rem;text-align:center;}
+.puz-counter{text-align:center;font-size:.72rem;font-weight:700;color:#9ca3af;margin-bottom:.2rem;}
+.puz-goal{background:#fef3c7;border:1.5px solid #fcd34d;border-radius:10px;padding:.45rem .7rem;font-size:.76rem;font-weight:700;color:#92400e;margin-bottom:.5rem;text-align:center;line-height:1.4;}
+.puz-goal strong{color:#d97706;}
+.slot-row{display:flex;gap:6px;align-items:flex-end;justify-content:center;flex-wrap:nowrap;min-height:170px;padding:.2rem 0;overflow-x:auto;}
+.slot{display:flex;flex-direction:column;align-items:center;gap:2px;flex-shrink:0;}
+.slot-badge{font-family:'Baloo 2',cursive;font-size:.85rem;font-weight:800;width:24px;height:24px;border-radius:50%;border:2px solid #d1d5db;background:#f3f4f6;color:#9ca3af;display:flex;align-items:center;justify-content:center;transition:all .3s;}
+.slot-badge.sm{border-color:#22c55e;background:#dcfce7;color:#16a34a;}
+.slot-badge.sw{border-color:#ef4444;background:#fee2e2;color:#ef4444;}
+.hchip-sm{font-size:.52rem;font-weight:800;background:#ede9fe;color:#7c6ff7;border-radius:20px;padding:1px 5px;}
+.hbtn{font-size:.7rem;width:22px;height:17px;border-radius:5px;border:1.5px solid #e5e7eb;background:#f0f4ff;color:#7c6ff7;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;padding:0;transition:all .14s;}
+.hbtn:hover{background:#ede9fe;border-color:#7c6ff7;}
+.slot-ntag{font-size:.52rem;font-weight:700;color:#6b7280;max-width:42px;text-overflow:ellipsis;overflow:hidden;white-space:nowrap;text-align:center;}
+.slot-end{font-size:.46rem;font-weight:800;background:#fce7f3;color:#f472b6;border:1px solid #fbcfe8;border-radius:5px;padding:1px 3px;}
+.crow{display:flex;gap:.5rem;justify-content:center;margin-top:.6rem;flex-wrap:wrap;}
+.cbtn{font-family:'Baloo 2',cursive;font-size:.82rem;font-weight:700;border:none;border-radius:50px;padding:.42rem 1.1rem;cursor:pointer;transition:transform .14s;}
+.cbtn:hover{transform:scale(1.04);}
+.cbtn-c{background:linear-gradient(135deg,#7c6ff7,#a78bfa);color:#fff;box-shadow:0 3px 8px rgba(124,111,247,.3);}
+.cbtn-n{background:#fff;color:#7c6ff7;border:1.5px solid #c4b5fd;}
+.puz-fb{margin-top:.5rem;border-radius:10px;padding:.5rem .7rem;font-weight:800;font-size:.8rem;display:none;align-items:center;gap:.35rem;justify-content:center;text-align:center;line-height:1.35;}
+.puz-fb.show{display:flex;}
+.puz-fb.fok{background:#dcfce7;color:#166534;border:1.5px solid #86efac;}
+.puz-fb.fno{background:#fee2e2;color:#991b1b;border:1.5px solid #fca5a5;}
+.puz-hint{margin-top:.4rem;font-size:.72rem;color:#6b7280;font-weight:700;text-align:center;line-height:1.4;}
+.puz-solved{font-size:.72rem;font-weight:800;color:#16a34a;text-align:center;margin-top:.3rem;}
+
+/* LEARN */
+.ccard{background:#fff;border-radius:12px;padding:.7rem .9rem;margin-bottom:.6rem;border:1.5px solid #e5e7eb;box-shadow:0 2px 8px rgba(100,116,210,.06);}
+.ccard h3{font-family:'Baloo 2',cursive;font-size:.9rem;font-weight:800;color:#7c6ff7;margin-bottom:.35rem;}
+.mini-stage{display:flex;align-items:flex-end;gap:7px;justify-content:center;background:#f8f9ff;border-radius:8px;padding:.5rem .4rem .3rem;margin:.35rem 0;}
+.mini-person{display:flex;flex-direction:column;align-items:center;gap:1px;}
+.mini-nm{font-size:.52rem;font-weight:700;color:#6b7280;}
+.mini-badge{font-family:'Baloo 2',cursive;font-size:.72rem;font-weight:800;width:20px;height:20px;border-radius:50%;border:1.5px solid;display:flex;align-items:center;justify-content:center;}
+.ccard p{font-size:.74rem;color:#4b5563;font-weight:600;line-height:1.45;}
+.ccard p strong{color:#1e1b4b;}
+
+/* CONFETTI */
+.cf{position:fixed;pointer-events:none;z-index:9999;animation:cfall var(--d) var(--dl) ease-in forwards;}
+@keyframes cfall{0%{opacity:1;transform:translateY(0) rotate(0);}100%{opacity:0;transform:translateY(100vh) rotate(720deg);}}
+</style>
+</head>
+<body>
+
+<div class="clouds">
+  <div class="cloud c1"></div>
+  <div class="cloud c2"></div>
+  <div class="cloud c3"></div>
+</div>
+
+<div class="wrapper">
+  <div class="top-hdr">
+    <h1>🎮 Number <span>Play!</span></h1>
+    <p>Quiz · Puzzle · Learn — all in one place!</p>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('quiz')">📝 Quiz</button>
+    <button class="tab" onclick="switchTab('puzzle')">🧩 Puzzle</button>
+    <button class="tab" onclick="switchTab('learn')">📚 Learn</button>
+  </div>
+
+  <!-- ══════════ QUIZ PANEL ══════════ -->
+  <div class="panel active" id="panel-quiz">
+    <div class="sbar">
+      <div class="spill sc">✅ Correct <span class="n" id="qsc">0</span></div>
+      <div class="spill sw">❌ Wrong <span class="n" id="qsw">0</span></div>
+      <div class="spill ss">🔥 Streak <span class="n" id="qss">0</span></div>
+      <div class="spill sq">📝 Q <span class="n" id="qsq">1</span>/10</div>
+    </div>
+    <div class="rbox">📏 <strong>Rule:</strong> Each person says how many neighbours are <strong>taller</strong>. Both taller → <strong>2</strong> &nbsp;|&nbsp; One taller → <strong>1</strong> &nbsp;|&nbsp; None → <strong>0</strong> &nbsp;|&nbsp; End people max = <strong>1</strong></div>
+    <div class="sout">
+      <div class="sky"></div>
+      <div class="scard"><div class="stage" id="qstage"></div></div>
+      <div class="grass"></div><div class="soil"></div>
+    </div>
+    <div class="legend">
+      <div class="li"><div class="ld" style="background:#f3f4f6;color:#9ca3af">0</div>No taller neighbour</div>
+      <div class="li"><div class="ld" style="background:#dcfce7;color:#16a34a">1</div>One taller</div>
+      <div class="li"><div class="ld" style="background:#fef3c7;color:#d97706">2</div>Both taller</div>
+    </div>
+    <div class="qarea" id="quizArea">
+      <div class="qcard">
+        <span class="qemoji" id="qe">🤔</span>
+        <div class="qtext" id="qt">Loading…</div>
+        <div class="arow">
+          <button class="abtn" id="b0" onclick="check(0)">0</button>
+          <button class="abtn" id="b1" onclick="check(1)">1</button>
+          <button class="abtn" id="b2" onclick="check(2)">2</button>
+        </div>
+        <div class="fb" id="fb"></div>
+        <button class="bn" id="bn" onclick="nextQ()">Next →</button>
+      </div>
+    </div>
+    <div class="endsc" id="endsc">
+      <span class="tr" id="etr">🏆</span>
+      <h2 id="etitle"></h2>
+      <div class="sb" id="escore"></div>
+      <p id="emsg"></p>
+      <button class="btr" onclick="startQuiz()">🎮 Play Again!</button>
+    </div>
+    <button class="bnnew" onclick="startQuiz()">🔄 New Game</button>
+  </div>
+
+  <!-- ══════════ PUZZLE PANEL ══════════ -->
+  <div class="panel" id="panel-puzzle">
+    <div class="rbox" style="margin-bottom:.5rem;">🧩 <strong>How to play:</strong> Use the <strong>▲ ▼</strong> buttons to change each person's height. Make everyone say their <strong>target number</strong> shown below them, then click <strong>Check Answer</strong>!</div>
+    <div class="puz-card">
+      <div class="puz-counter" id="puz-counter">Puzzle 1 / 8</div>
+      <div class="puz-title" id="puz-title">Loading…</div>
+      <div class="puz-goal" id="puz-goal"></div>
+      <div class="slot-row" id="slot-row"></div>
+      <div class="crow">
+        <button class="cbtn cbtn-c" onclick="checkPuzzle()">✅ Check Answer</button>
+        <button class="cbtn cbtn-n" onclick="nextPuzzle()">⏭ Next Puzzle</button>
+        <button class="cbtn cbtn-n" onclick="resetPuzzle()">🔄 Reset</button>
+      </div>
+      <div class="puz-fb" id="puz-fb"></div>
+      <div class="puz-hint" id="puz-hint"></div>
+    </div>
+  </div>
+
+  <!-- ══════════ LEARN PANEL ══════════ -->
+  <div class="panel" id="panel-learn">
+    <div class="rbox" style="margin-bottom:.5rem;">📚 <strong>Study these patterns</strong> before you play! Each example shows the heights and what number everyone says.</div>
+    <div id="concept-list"></div>
+  </div>
+</div>
+
+<script>
+/* ===== SHARED ===== */
+const gN=['Aria','Luna','Zara','Nova','Mia','Isla','Cleo','Ivy','Sara','Nia','Maya','Layla'];
+const bN=['Leo','Zain','Kai','Rex','Theo','Finn','Axel','Jake','Eli','Sam','Omar','Ryan'];
+function rnd(a,b){return Math.floor(Math.random()*(b-a+1))+a;}
+function shuf(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=rnd(0,i);[b[i],b[j]]=[b[j],b[i]];}return b;}
+function calcNum(arr,i){const h=arr[i].height;let c=0;if(i>0&&arr[i-1].height>h)c++;if(i<arr.length-1&&arr[i+1].height>h)c++;return c;}
+
+function pSVG(gender,height,maxH,minH){
+  const range=maxH-minH||1;
+  const svgH=Math.round(38+((height-minH)/range)*52);
+  const svgW=Math.round(svgH*.54);
+  const sk='#fcd9b0',hr=gender==='girl'?'#92400e':'#292524',sh=gender==='girl'?'#f9a8d4':'#93c5fd',bt=gender==='girl'?'#c084fc':'#1d4ed8',sho='#374151';
+  const hR=svgH*.12,hCX=svgW/2,hCY=hR+2,bT=hCY+hR,bH=svgH*.32,bW=svgW*.54,bX=(svgW-bW)/2,lH=svgH*.27,lW=bW*.4,fH=svgH*.07;
+  return`<svg class="psvg" width="${svgW}" height="${svgH}" viewBox="0 0 ${svgW} ${svgH}" xmlns="http://www.w3.org/2000/svg">
+<ellipse cx="${hCX}" cy="${hCY-hR*.25}" rx="${hR+(gender==='girl'?3:1)}" ry="${hR*.72}" fill="${hr}"/>
+${gender==='girl'?`<rect x="${hCX-hR-2.5}" y="${hCY}" width="3" height="${hR*1.5}" rx="1.5" fill="${hr}"/><rect x="${hCX+hR-.5}" y="${hCY}" width="3" height="${hR*1.5}" rx="1.5" fill="${hr}"/>`:''}
+<circle cx="${hCX}" cy="${hCY}" r="${hR}" fill="${sk}"/>
+<circle cx="${hCX-hR*.35}" cy="${hCY-1}" r="${hR*.13}" fill="#374151"/>
+<circle cx="${hCX+hR*.35}" cy="${hCY-1}" r="${hR*.13}" fill="#374151"/>
+<path d="M ${hCX-hR*.27} ${hCY+hR*.28} Q ${hCX} ${hCY+hR*.54} ${hCX+hR*.27} ${hCY+hR*.28}" stroke="#b45309" stroke-width="1" fill="none" stroke-linecap="round"/>
+<rect x="${bX}" y="${bT}" width="${bW}" height="${bH}" rx="${bW*.24}" fill="${sh}"/>
+${gender==='girl'?`<path d="M ${bX} ${bT+bH*.6} Q ${svgW/2} ${bT+bH*1.08} ${bX+bW} ${bT+bH*.6} L ${bX+bW} ${bT+bH} Q ${svgW/2} ${bT+bH*1.32} ${bX} ${bT+bH} Z" fill="${sh}" opacity=".5"/>`:''}
+<line x1="${bX+2}" y1="${bT+bH*.12}" x2="${bX-bW*.28}" y2="${bT+bH*.55}" stroke="${sk}" stroke-width="${bW*.17}" stroke-linecap="round"/>
+<line x1="${bX+bW-2}" y1="${bT+bH*.12}" x2="${bX+bW+bW*.28}" y2="${bT+bH*.55}" stroke="${sk}" stroke-width="${bW*.17}" stroke-linecap="round"/>
+<rect x="${bX+bW*.08}" y="${bT+bH}" width="${lW}" height="${lH}" rx="${lW*.4}" fill="${bt}"/>
+<rect x="${bX+bW-lW-bW*.08}" y="${bT+bH}" width="${lW}" height="${lH}" rx="${lW*.4}" fill="${bt}"/>
+<ellipse cx="${bX+bW*.08+lW*.5}" cy="${bT+bH+lH+fH*.45}" rx="${lW*.58}" ry="${fH*.48}" fill="${sho}"/>
+<ellipse cx="${bX+bW-lW*.5-bW*.08}" cy="${bT+bH+lH+fH*.45}" rx="${lW*.58}" ry="${fH*.48}" fill="${sho}"/>
+</svg>`;
+}
+
+/* ===== TABS ===== */
+function switchTab(id){
+  document.querySelectorAll('.tab').forEach((t,i)=>{t.classList.toggle('active',['quiz','puzzle','learn'][i]===id);});
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+}
+
+/* ===== CONFETTI ===== */
+function confetti(n){
+  const cl=['#f472b6','#7c6ff7','#38bdf8','#22c55e','#f59e0b','#a78bfa'];
+  for(let i=0;i<n;i++){
+    const el=document.createElement('div');el.className='cf';
+    el.style.cssText=`left:${Math.random()*100}vw;top:-10px;background:${cl[rnd(0,cl.length-1)]};width:${rnd(6,11)}px;height:${rnd(6,11)}px;border-radius:${Math.random()>.5?'50%':'2px'};--d:${(.8+Math.random()*.7).toFixed(2)}s;--dl:${(Math.random()*.35).toFixed(2)}s;`;
+    document.body.appendChild(el);setTimeout(()=>el.remove(),1800);
+  }
+}
+
+/* ══════════ QUIZ ══════════ */
+let qP=[],qIdx=0,qCor=0,qWr=0,qStr=0,qTgt=0,qAns=0,qDone=false;
+const TQ=10;
+
+function genPeople(){
+  const n=rnd(5,8);const gns=shuf([...gN]);const bns=shuf([...bN]);let gi=0,bi=0;
+  const hs=[];while(hs.length<n){const h=rnd(115,195);if(!hs.includes(h))hs.push(h);}
+  qP=Array.from({length:n},(_,i)=>{const g=Math.random()<.5;return{gender:g?'girl':'boy',name:g?gns[gi++%gns.length]:bns[bi++%bns.length],height:hs[i]};});
+}
+
+function renderQ(hl,showBadges){
+  const st=document.getElementById('qstage');st.innerHTML='';
+  const hs=qP.map(p=>p.height);const maxH=Math.max(...hs),minH=Math.min(...hs);
+  qP.forEach((p,i)=>{
+    const isEnd=(i===0||i===qP.length-1);
+    const w=document.createElement('div');w.className='pw'+(i===hl?' hl':'');w.style.animationDelay=`${i*.05}s`;
+    let badge='';if(showBadges){const n=calcNum(qP,i);badge=`<div class="nbadge nb${n}">${n}</div>`;}
+    w.innerHTML=`${badge}${pSVG(p.gender,p.height,maxH,minH)}<div class="hchip">${p.height}cm</div><div class="ntag">${p.name}</div>${isEnd?'<div class="echip">END</div>':''}`;
+    st.appendChild(w);
+  });
+}
+
+function setQUI(){
+  qDone=false;
+  [0,1,2].forEach(n=>{const b=document.getElementById('b'+n);b.className='abtn';b.disabled=false;b.style.opacity='1';});
+  document.getElementById('fb').className='fb';document.getElementById('bn').className='bn';
+  const isEnd=(qTgt===0||qTgt===qP.length-1);
+  if(isEnd){document.getElementById('b2').disabled=true;document.getElementById('b2').style.opacity='.38';}
+  const p=qP[qTgt];
+  document.getElementById('qe').textContent=p.gender==='girl'?'👧':'👦';
+  document.getElementById('qt').innerHTML=`What number will <strong>${p.name}</strong> say?`;
+}
+
+function check(chosen){
+  if(qDone)return;qDone=true;
+  document.getElementById('b'+chosen).classList.add('sel');
+  [0,1,2].forEach(n=>document.getElementById('b'+n).disabled=true);
+  setTimeout(()=>{
+    const fb=document.getElementById('fb');
+    if(chosen===qAns){
+      qCor++;qStr++;
+      document.getElementById('b'+chosen).className='abtn ok';
+      fb.className='fb fok show';
+      fb.innerHTML=`✅ <strong>Correct!</strong> ${qP[qTgt].name} says ${qAns}!`;
+      confetti(6);
+    } else {
+      qWr++;qStr=0;
+      document.getElementById('b'+chosen).className='abtn no';
+      document.getElementById('b'+qAns).className='abtn ok';
+      fb.className='fb fno show';
+      fb.innerHTML=`❌ Answer is <strong>${qAns}</strong>. ${qP[qTgt].name} has ${qAns} taller neighbour${qAns!==1?'s':''}!`;
+    }
+    document.getElementById('qsc').textContent=qCor;
+    document.getElementById('qsw').textContent=qWr;
+    document.getElementById('qss').textContent=qStr;
+    renderQ(qTgt,true);
+    const bn=document.getElementById('bn');bn.className='bn show';
+    bn.textContent=qIdx>=TQ?'See Results 🏆':'Next →';
+  },270);
+}
+
+function nextQ(){
+  if(qIdx>=TQ){showEnd();return;}
+  qIdx++;document.getElementById('qsq').textContent=Math.min(qIdx,TQ);
+  genPeople();qTgt=rnd(0,qP.length-1);qAns=calcNum(qP,qTgt);
+  renderQ(qTgt,false);setQUI();
+}
+
+function showEnd(){
+  document.getElementById('quizArea').style.display='none';
+  document.getElementById('endsc').classList.add('show');
+  const pct=qCor/TQ;
+  let tr='🏆',ti='',mg='';
+  if(pct===1){tr='🥇';ti='Perfect!';mg='Every single one right! You are a champion!';}
+  else if(pct>=.8){tr='🌟';ti='Excellent!';mg=`${qCor}/${TQ} — Amazing work! Almost perfect!`;}
+  else if(pct>=.6){tr='👍';ti='Good Job!';mg=`${qCor}/${TQ} — Solid effort! Keep practicing!`;}
+  else if(pct>=.4){tr='🙂';ti='Keep Trying!';mg=`${qCor}/${TQ} — Check the Learn tab for help!`;}
+  else{tr='💪';ti='Practice More!';mg=`${qCor}/${TQ} — Try the Learn tab and try again!`;}
+  document.getElementById('etr').textContent=tr;
+  document.getElementById('etitle').textContent=ti;
+  document.getElementById('escore').textContent=`${qCor}/${TQ}`;
+  document.getElementById('emsg').textContent=mg;
+  if(pct>=.8)confetti(25);
+}
+
+function startQuiz(){
+  qCor=0;qWr=0;qStr=0;qIdx=1;qDone=false;
+  document.getElementById('endsc').classList.remove('show');
+  document.getElementById('quizArea').style.display='';
+  document.getElementById('qsc').textContent=0;
+  document.getElementById('qsw').textContent=0;
+  document.getElementById('qss').textContent=0;
+  document.getElementById('qsq').textContent=1;
+  genPeople();qTgt=rnd(0,qP.length-1);qAns=calcNum(qP,qTgt);
+  renderQ(qTgt,false);setQUI();
+}
+
+/* ══════════ PUZZLE ══════════ */
+const PUZZLES=[
+  {
+    title:'Challenge 1 — All Same Height',
+    desc:'Make ALL 5 children exactly the same height. What will they say?',
+    n:5,goal:[0,0,0,0,0],
+    hint:'When everyone is the same height, no one is taller than anyone else — same height does NOT count as taller! So everyone says 0.'
+  },
+  {
+    title:'Challenge 2 — Your Example!',
+    desc:'5 students: make 4 say "1" and the last one say "0".',
+    n:5,goal:[1,1,1,1,0],
+    hint:'Try: make heights go UP from left to right like stairs — 120, 135, 150, 165, 180. Then check who says what!'
+  },
+  {
+    title:'Challenge 3 — Mountain Peak',
+    desc:'The middle person is the tallest. Make the pattern: 0, 1, 2, 1, 0',
+    n:5,goal:[0,1,2,1,0],
+    hint:'Wait — the middle person is TALLEST, so their neighbours are shorter, so THEY say 0. The SHORT ones beside the peak have one taller neighbour (the peak) so they say 1. Try a V-shape instead!'
+  },
+  {
+    title:'Challenge 4 — Valley Shape',
+    desc:'The middle person is the SHORTEST. Make the pattern: 0, 1, 2, 1, 0',
+    n:5,goal:[0,1,2,1,0],
+    hint:'Middle is shortest so BOTH neighbours are taller → says 2! The ones beside the valley have one taller neighbour (the tall end) → say 1. The tall ends have no taller neighbour → say 0!'
+  },
+  {
+    title:'Challenge 5 — All Say "1"',
+    desc:'Make ALL 6 people say "1"! (End people can only say 1 at most)',
+    n:6,goal:[1,1,1,1,1,1],
+    hint:'Try a zigzag: short-tall-short-tall-short-tall! Every person then has exactly one taller neighbour. The short ends need a taller neighbour on one side.'
+  },
+  {
+    title:'Challenge 6 — Staircase Up',
+    desc:'Heights go UP left to right (each taller than the previous). Guess: what does everyone say?',
+    n:5,goal:[1,1,1,1,0],
+    hint:'In a staircase UP: each person (except the last) has a taller person on their right → says 1. The last (tallest) has NO taller neighbour → says 0!'
+  },
+  {
+    title:'Challenge 7 — Two Valleys',
+    desc:'Make positions 2 and 4 (the 2nd and 4th people) both say "2"!',
+    n:5,goal:[0,2,0,2,0],
+    hint:'For someone to say 2, both their neighbours must be taller. So positions 2 and 4 must be the SHORTEST, and positions 1, 3, 5 must be taller!'
+  },
+  {
+    title:'Challenge 8 — End People Say 0',
+    desc:'Make both end people say "0" and all middle people say "2".',
+    n:4,goal:[0,2,2,0],
+    hint:'End people say 0 means their one neighbour is shorter. Middle people say 2 means both their neighbours are taller. Try: tall-short-short-tall!'
+  },
+];
+
+let puzIdx=0,puzPeople=[],puzOriginal=[];
+
+function buildPuzzlePeople(n,goal){
+  const gns=shuf([...gN]);const bns=shuf([...bN]);let gi=0,bi=0;
+  const gender=Array.from({length:n},()=>Math.random()<.5?'girl':'boy');
+  const names=gender.map(g=>g==='girl'?gns[gi++%gns.length]:bns[bi++%bns.length]);
+  const h=Array(n).fill(150);
+  for(let iter=0;iter<300;iter++){
+    let ok=true;
+    for(let i=0;i<n;i++){
+      const actual=calcNum(h.map((v,j)=>({height:h[j]})),i);
+      if(actual!==goal[i]){
+        ok=false;
+        if(goal[i]>actual){
+          if(i>0&&h[i-1]<=h[i])h[i-1]=h[i]+rnd(8,22);
+          else if(i<n-1&&h[i+1]<=h[i])h[i+1]=h[i]+rnd(8,22);
+        } else {
+          const mx=Math.max(i>0?h[i-1]:0,i<n-1?h[i+1]:0);
+          h[i]=mx+rnd(6,16);
+        }
+      }
+    }
+    if(ok)break;
+  }
+  const mn=Math.min(...h),mx2=Math.max(...h);
+  return Array.from({length:n},(_,i)=>({
+    gender:gender[i],name:names[i],
+    height:Math.round(120+((h[i]-mn)/(mx2-mn||1))*70)
+  }));
+}
+
+function renderPuzzle(){
+  const puz=PUZZLES[puzIdx];
+  document.getElementById('puz-counter').textContent=`Puzzle ${puzIdx+1} / ${PUZZLES.length}`;
+  document.getElementById('puz-title').textContent=puz.title;
+  const goalStr=puz.goal.map(g=>`<strong style="color:${g===2?'#d97706':g===1?'#16a34a':'#9ca3af'}">${g}</strong>`).join(' , ');
+  document.getElementById('puz-goal').innerHTML=`🎯 Target: [ ${goalStr} ] — adjust heights to match!`;
+  document.getElementById('puz-hint').textContent='';
+  document.getElementById('puz-fb').className='puz-fb';
+  puzPeople=buildPuzzlePeople(puz.n,puz.goal);
+  puzOriginal=puzPeople.map(p=>({...p}));
+  renderSlots();
+}
+
+function renderSlots(){
+  const row=document.getElementById('slot-row');row.innerHTML='';
+  const hs=puzPeople.map(p=>p.height);
+  const maxH=Math.max(...hs),minH=Math.min(...hs);
+  const goal=PUZZLES[puzIdx].goal;
+  puzPeople.forEach((p,i)=>{
+    const isEnd=(i===0||i===puzPeople.length-1);
+    const cur=calcNum(puzPeople,i);
+    const g=goal[i];
+    const badgeCls='slot-badge'+(cur===g?' sm':' sw');
+    const slot=document.createElement('div');slot.className='slot';
+    slot.innerHTML=`
+      <div class="${badgeCls}" id="sbadge${i}" title="Currently says ${cur}, needs ${g}">${cur}</div>
+      ${pSVG(p.gender,p.height,maxH,minH)}
+      <button class="hbtn" onclick="adjH(${i},5)">▲</button>
+      <div class="hchip-sm">${p.height}cm</div>
+      <button class="hbtn" onclick="adjH(${i},-5)">▼</button>
+      <div class="slot-ntag">${p.name}</div>
+      ${isEnd?'<div class="slot-end">END</div>':''}
+    `;
+    row.appendChild(slot);
+  });
+}
+
+function adjH(i,delta){
+  puzPeople[i].height=Math.max(100,Math.min(215,puzPeople[i].height+delta));
+  renderSlots();
+  document.getElementById('puz-fb').className='puz-fb';
+  document.getElementById('puz-hint').textContent='';
+}
+
+function checkPuzzle(){
+  const goal=PUZZLES[puzIdx].goal;
+  const actual=puzPeople.map((_,i)=>calcNum(puzPeople,i));
+  const allOk=goal.every((g,i)=>g===actual[i]);
+  const fb=document.getElementById('puz-fb');
+  if(allOk){
+    fb.className='puz-fb fok show';
+    fb.innerHTML='🎉 <strong>Perfect!</strong> Everyone says the right number! Great thinking!';
+    confetti(20);
+  } else {
+    const wrong=goal.map((g,i)=>g!==actual[i]?`${puzPeople[i].name} says ${actual[i]} (needs ${g})`:'').filter(Boolean);
+    fb.className='puz-fb fno show';
+    fb.innerHTML=`❌ Not yet! ${wrong.slice(0,2).join('; ')}. Keep adjusting!`;
+    document.getElementById('puz-hint').textContent=`💡 Hint: ${PUZZLES[puzIdx].hint}`;
+  }
+}
+
+function nextPuzzle(){
+  puzIdx=(puzIdx+1)%PUZZLES.length;
+  renderPuzzle();
+}
+
+function resetPuzzle(){
+  puzPeople=puzOriginal.map(p=>({...p}));
+  renderSlots();
+  document.getElementById('puz-fb').className='puz-fb';
+  document.getElementById('puz-hint').textContent='';
+}
+
+/* ══════════ LEARN ══════════ */
+const CONCEPTS=[
+  {
+    title:'👫 All Equal Height → Everyone says 0',
+    people:[{h:150,g:'girl',n:'Mia'},{h:150,g:'boy',n:'Leo'},{h:150,g:'girl',n:'Zara'},{h:150,g:'boy',n:'Kai'},{h:150,g:'girl',n:'Aria'}],
+    exp:'When <strong>everyone is the same height</strong>, no one counts as "taller" — same height does NOT count! So every person has 0 taller neighbours. Everyone says <strong>0</strong>.'
+  },
+  {
+    title:'🏔 Mountain Peak → Middle says 0, sides say 1, ends say 0',
+    people:[{h:120,g:'girl',n:'Cleo'},{h:140,g:'boy',n:'Finn'},{h:180,g:'girl',n:'Luna'},{h:140,g:'boy',n:'Theo'},{h:120,g:'girl',n:'Nia'}],
+    exp:'The tallest person (peak) has <strong>no one taller</strong> so says <strong>0</strong>. The two beside the peak have the peak on one side (taller!) and an end on the other (shorter) — so they say <strong>1</strong>. The ends have one neighbour who is shorter — so they say <strong>0</strong>.'
+  },
+  {
+    title:'🏔 Valley Shape → Middle says 2!',
+    people:[{h:170,g:'boy',n:'Omar'},{h:145,g:'girl',n:'Sara'},{h:115,g:'boy',n:'Eli'},{h:145,g:'girl',n:'Maya'},{h:170,g:'boy',n:'Jake'}],
+    exp:'The <strong>shortest person in the middle</strong> has BOTH neighbours taller — so they say <strong>2</strong>! The people beside the valley have one taller neighbour (the tall end) and one shorter (the valley) — so they say <strong>1</strong>. The tall ends say <strong>0</strong> — their one visible neighbour is shorter than them.'
+  },
+  {
+    title:'🪜 Staircase Up → Says 1, 1, 1, 1, 0',
+    people:[{h:120,g:'boy',n:'Sam'},{h:138,g:'girl',n:'Ivy'},{h:152,g:'boy',n:'Rex'},{h:167,g:'girl',n:'Nova'},{h:183,g:'boy',n:'Axel'}],
+    exp:'In a staircase going UP, each person (except the last) has a taller person on their RIGHT side — so they say <strong>1</strong>. The LAST person (tallest) has no taller neighbour at all — so they say <strong>0</strong>. The first person also has only one neighbour (on the right) who is taller — says <strong>1</strong>.'
+  },
+  {
+    title:'〰️ Zigzag → Almost everyone says 1',
+    people:[{h:125,g:'boy',n:'Ash'},{h:168,g:'girl',n:'Aria'},{h:125,g:'boy',n:'Cole'},{h:168,g:'girl',n:'Mia'},{h:125,g:'boy',n:'Zain'}],
+    exp:'A <strong>zigzag pattern</strong> (short-tall-short-tall…) gives every person exactly ONE taller neighbour. Middle short people have tall people on both sides — but wait, that means BOTH are taller → says <strong>2</strong>! The tall middles have short on both sides → say <strong>0</strong>. The short ends have one tall neighbour → say <strong>1</strong>.'
+  },
+  {
+    title:'🚫 End People Can NEVER Say 2',
+    people:[{h:120,g:'girl',n:'Layla'},{h:180,g:'boy',n:'Ryan'},{h:140,g:'girl',n:'Isla'},{h:175,g:'boy',n:'Ben'},{h:155,g:'girl',n:'Eva'}],
+    exp:'End people (first and last) only have <strong>ONE neighbour</strong>. The maximum number of taller neighbours they can have is 1. So an end person can say <strong>0</strong> or <strong>1</strong>, but <strong>NEVER 2</strong>. That is why the "2" button is greyed out when the question is about an end person!'
+  },
+];
+
+function buildLearnSection(c){
+  const hs=c.people.map(p=>p.h);const maxH=Math.max(...hs),minH=Math.min(...hs);
+  const nums=c.people.map((_,i)=>calcNum(c.people.map(p=>({height:p.h})),i));
+  const cols=['#f3f4f6','#dcfce7','#fef3c7'];
+  const tcols=['#9ca3af','#16a34a','#d97706'];
+  const bcols=['#d1d5db','#86efac','#fcd34d'];
+  let mini='<div class="mini-stage">';
+  c.people.forEach((p,i)=>{
+    const n=nums[i];
+    mini+=`<div class="mini-person"><div class="mini-badge" style="background:${cols[n]};color:${tcols[n]};border-color:${bcols[n]}">${n}</div>${pSVG(p.g,p.h,maxH,minH)}<div class="mini-nm">${p.n}</div></div>`;
+  });
+  mini+='</div>';
+  return`<div class="ccard"><h3>${c.title}</h3>${mini}<p>${c.exp}</p></div>`;
+}
+
+function buildLearn(){
+  document.getElementById('concept-list').innerHTML=CONCEPTS.map(buildLearnSection).join('');
+}
+
+/* ===== BOOT ===== */
+startQuiz();
+renderPuzzle();
+buildLearn();
+</script>
+</body>
+</html>
