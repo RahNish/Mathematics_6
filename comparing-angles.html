@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Comparing Angles | Class 6 Ganit Prakash</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Nunito',sans-serif;background:#f0f9ff;color:#1e3a5f;min-height:100vh;}
+
+/* clouds */
+.clouds{position:fixed;top:0;left:0;right:0;height:160px;pointer-events:none;z-index:0;overflow:hidden;}
+.cloud{position:absolute;background:#fff;border-radius:50px;opacity:.55;}
+.cloud::before,.cloud::after{content:'';position:absolute;background:#fff;border-radius:50%;}
+.c1{width:100px;height:32px;top:20px;left:-130px;animation:drift 26s linear infinite;}
+.c1::before{width:46px;height:46px;top:-20px;left:14px;}
+.c1::after{width:30px;height:30px;top:-13px;left:48px;}
+.c2{width:78px;height:24px;top:50px;left:-100px;animation:drift 36s 11s linear infinite;opacity:.38;}
+.c2::before{width:34px;height:34px;top:-16px;left:11px;}
+.c2::after{width:24px;height:24px;top:-11px;left:36px;}
+.c3{width:120px;height:36px;top:8px;left:-150px;animation:drift 30s 18s linear infinite;opacity:.42;}
+.c3::before{width:54px;height:54px;top:-24px;left:18px;}
+.c3::after{width:36px;height:36px;top:-17px;left:60px;}
+@keyframes drift{to{transform:translateX(calc(100vw + 250px));}}
+
+/* home */
+.home-btn{position:fixed;top:14px;left:14px;z-index:9999;display:flex;align-items:center;gap:6px;background:#fff;border:1.5px solid #e0e7ef;border-radius:50px;padding:7px 16px 7px 12px;font-family:'Nunito',sans-serif;font-size:.82rem;font-weight:700;color:#2563eb;text-decoration:none;box-shadow:0 2px 10px rgba(0,0,0,.1);transition:transform .15s;}
+.home-btn:hover{transform:scale(1.05);}
+
+/* wrapper */
+.wrapper{position:relative;z-index:2;max-width:960px;margin:0 auto;padding:0 14px 48px;}
+
+/* header */
+.hub-header{text-align:center;padding:52px 12px 18px;}
+.hub-header h1{font-family:'Baloo 2',cursive;font-size:clamp(1.9rem,5vw,2.9rem);font-weight:800;color:#1d4ed8;line-height:1.1;}
+.hub-header h1 span{color:#f59e0b;}
+.hub-header p{color:#6b7280;font-size:.9rem;font-weight:600;margin-top:.4rem;}
+.chapter-pill{display:inline-block;background:#dbeafe;color:#1d4ed8;font-size:.72rem;font-weight:700;padding:4px 14px;border-radius:20px;border:1px solid #93c5fd;margin-top:.5rem;letter-spacing:.5px;}
+
+/* TABS */
+.tabs{display:flex;background:#fff;border-radius:16px 16px 0 0;border:2px solid #dbeafe;border-bottom:none;margin:0 2px;overflow:hidden;}
+.tab{flex:1;padding:.65rem .3rem;font-family:'Baloo 2',cursive;font-size:.85rem;font-weight:700;border:none;background:transparent;cursor:pointer;color:#9ca3af;transition:all .2s;border-bottom:3px solid transparent;}
+.tab.active{color:#2563eb;background:#eff6ff;border-bottom:3px solid #2563eb;}
+.tab:hover:not(.active){background:#f9fafb;color:#6b7280;}
+.panel{display:none;background:#fff;border:2px solid #dbeafe;border-top:none;border-radius:0 0 16px 16px;margin:0 2px;padding:.8rem .6rem 1rem;}
+.panel.active{display:block;}
+
+/* info box */
+.ibox{border-radius:12px;padding:.55rem 1rem;margin:.3rem 0 .6rem;font-size:.76rem;font-weight:700;line-height:1.55;}
+.ibox.blue{background:#dbeafe;border:1.5px solid #93c5fd;color:#1e40af;}
+.ibox.amber{background:#fef3c7;border:1.5px solid #fcd34d;color:#92400e;}
+.ibox.green{background:#dcfce7;border:1.5px solid #86efac;color:#166534;}
+.ibox strong{font-weight:800;}
+
+/* score bar */
+.sbar{display:flex;gap:.5rem;flex-wrap:wrap;justify-content:center;padding:.35rem 0 .5rem;}
+.spill{display:flex;align-items:center;gap:.3rem;background:#f0f9ff;border-radius:50px;padding:.22rem .65rem;font-weight:800;font-size:.74rem;border:1.5px solid #bae6fd;}
+.spill .n{font-family:'Baloo 2',cursive;font-size:.92rem;}
+.sc .n{color:#16a34a;}.sw .n{color:#ef4444;}.sq .n{color:#f59e0b;}
+
+/* canvas stage */
+.stage{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;align-items:flex-start;margin:.5rem 0;}
+.angle-box{display:flex;flex-direction:column;align-items:center;gap:6px;background:#f8faff;border:1.5px solid #dbeafe;border-radius:14px;padding:12px 14px;}
+.angle-box canvas{display:block;}
+.angle-label{font-family:'Baloo 2',cursive;font-size:.88rem;font-weight:800;color:#1d4ed8;}
+
+/* answer buttons */
+.arow{display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap;margin:.6rem 0 .3rem;}
+.abtn{font-family:'Baloo 2',cursive;font-size:.88rem;font-weight:700;padding:.45rem 1.2rem;border-radius:50px;border:2px solid #dbeafe;background:#eff6ff;color:#1e40af;cursor:pointer;transition:all .15s;}
+.abtn:hover:not(:disabled){background:#dbeafe;border-color:#2563eb;transform:scale(1.06);}
+.abtn.sel{background:#2563eb;color:#fff;border-color:#2563eb;}
+.abtn.ok{background:#22c55e!important;color:#fff!important;border-color:#22c55e!important;}
+.abtn.no{background:#ef4444!important;color:#fff!important;border-color:#ef4444!important;}
+.abtn:disabled{pointer-events:none;}
+
+/* feedback */
+.fb{border-radius:11px;padding:.5rem .9rem;font-weight:800;font-size:.8rem;display:none;align-items:center;gap:.4rem;justify-content:center;line-height:1.35;flex-wrap:wrap;margin:.3rem 0;}
+.fb.show{display:flex;}
+.fb.fok{background:#dcfce7;color:#166534;border:1.5px solid #86efac;}
+.fb.fno{background:#fee2e2;color:#991b1b;border:1.5px solid #fca5a5;}
+
+/* nav btn */
+.nav-btn{display:none;font-family:'Baloo 2',cursive;font-size:.9rem;font-weight:700;background:linear-gradient(135deg,#2563eb,#60a5fa);color:#fff;border:none;border-radius:50px;padding:.5rem 1.6rem;cursor:pointer;box-shadow:0 3px 10px rgba(37,99,235,.3);transition:transform .15s;margin:.4rem auto 0;display:block;opacity:0;pointer-events:none;}
+.nav-btn.show{opacity:1;pointer-events:auto;}
+.nav-btn:hover{transform:translateY(-2px);}
+.new-btn{display:block;margin:.4rem auto 0;font-family:'Baloo 2',cursive;font-size:.78rem;font-weight:700;background:#fff;color:#2563eb;border:1.5px solid #bae6fd;border-radius:50px;padding:.3rem 1rem;cursor:pointer;transition:background .15s;}
+.new-btn:hover{background:#eff6ff;}
+
+/* end screen */
+.endsc{background:#fff;border-radius:14px;padding:1.4rem 1rem;margin:.4rem 0;text-align:center;box-shadow:0 4px 18px rgba(37,99,235,.1);border:1.5px solid #dbeafe;display:none;}
+.endsc.show{display:block;}
+.endsc .tr{font-size:2.8rem;display:block;margin-bottom:.3rem;}
+.endsc h2{font-family:'Baloo 2',cursive;font-size:1.5rem;font-weight:800;color:#2563eb;}
+.endsc .sb{font-family:'Baloo 2',cursive;font-size:2.4rem;font-weight:800;color:#f59e0b;margin:.2rem 0;}
+.endsc p{color:#6b7280;font-size:.85rem;font-weight:600;}
+.restart{margin-top:.8rem;font-family:'Baloo 2',cursive;font-size:.95rem;font-weight:700;background:linear-gradient(135deg,#2563eb,#60a5fa);color:#fff;border:none;border-radius:50px;padding:.55rem 1.7rem;cursor:pointer;box-shadow:0 3px 10px rgba(37,99,235,.3);transition:transform .15s;}
+.restart:hover{transform:scale(1.05);}
+
+/* superimpose canvas */
+.superimpose-wrap{display:flex;flex-direction:column;align-items:center;gap:10px;margin:.5rem 0;}
+.sim-controls{display:flex;gap:.5rem;flex-wrap:wrap;justify-content:center;}
+.sim-btn{font-family:'Baloo 2',cursive;font-size:.8rem;font-weight:700;padding:.38rem .95rem;border-radius:50px;border:2px solid #dbeafe;background:#eff6ff;color:#1e40af;cursor:pointer;transition:all .15s;}
+.sim-btn:hover{background:#dbeafe;}
+.sim-btn.active-btn{background:#2563eb;color:#fff;border-color:#2563eb;}
+
+/* circular method */
+.circle-wrap{display:flex;flex-direction:column;align-items:center;gap:8px;margin:.5rem 0;}
+.circle-row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;align-items:flex-start;}
+.circle-box{display:flex;flex-direction:column;align-items:center;gap:5px;}
+.circle-box canvas{display:block;}
+.circle-label{font-family:'Baloo 2',cursive;font-size:.82rem;font-weight:800;color:#1d4ed8;}
+
+/* learn cards */
+.lcard{background:#fff;border-radius:12px;padding:.75rem 1rem;margin-bottom:.6rem;border:1.5px solid #dbeafe;box-shadow:0 2px 8px rgba(37,99,235,.06);}
+.lcard h3{font-family:'Baloo 2',cursive;font-size:.92rem;font-weight:800;color:#2563eb;margin-bottom:.35rem;}
+.lcard p{font-size:.76rem;color:#4b5563;font-weight:600;line-height:1.5;margin-top:.3rem;}
+.lcard p strong{color:#1e3a5f;}
+.steps{counter-reset:step;display:flex;flex-direction:column;gap:.4rem;margin-top:.4rem;}
+.step{display:flex;gap:.5rem;align-items:flex-start;font-size:.76rem;font-weight:600;color:#374151;line-height:1.45;}
+.step::before{counter-increment:step;content:counter(step);min-width:22px;height:22px;border-radius:50%;background:#2563eb;color:#fff;font-family:'Baloo 2',cursive;font-size:.72rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.step strong{color:#1e3a5f;}
+
+/* confetti */
+.cf{position:fixed;pointer-events:none;z-index:9999;animation:cfall var(--d) var(--dl) ease-in forwards;}
+@keyframes cfall{0%{opacity:1;transform:translateY(0) rotate(0);}100%{opacity:0;transform:translateY(100vh) rotate(720deg);}}
+</style>
+</head>
+<body>
+
+<a href="index.html" class="home-btn">🏠 Home</a>
+
+<div class="clouds">
+  <div class="cloud c1"></div><div class="cloud c2"></div><div class="cloud c3"></div>
+</div>
+
+<div class="wrapper">
+  <div class="hub-header">
+    <h1>🔺 Comparing <span>Angles</span></h1>
+    <p>Ganit Prakash · Class 6 · Chapter 2 — Lines &amp; Angles</p>
+    <span class="chapter-pill">Superimposition &amp; Circular Paper Method</span>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('learn')">📚 Learn</button>
+    <button class="tab" onclick="switchTab('superimpose')">🔁 Superimpose Quiz</button>
+    <button class="tab" onclick="switchTab('circular')">⭕ Circular Method Quiz</button>
+    <button class="tab" onclick="switchTab('challenge')">🏆 Challenge</button>
+  </div>
+
+  <!-- ══════ LEARN ══════ -->
+  <div class="panel active" id="panel-learn">
+    <div class="ibox blue">📖 <strong>From Ganit Prakash Chapter 2:</strong> We can compare two angles WITHOUT measuring their degrees. There are two main methods — <strong>Superimposition</strong> and the <strong>Circular Paper Method</strong>.</div>
+
+    <div class="lcard">
+      <h3>🔁 Method 1 — Superimposition (Placing One on Top of Another)</h3>
+      <div id="learn-super-canvas" style="display:flex;justify-content:center;margin:.4rem 0;"></div>
+      <div class="steps">
+        <div class="step"><span>Draw two angles on paper (or tracing paper).</span></div>
+        <div class="step"><span><strong>Match the vertices</strong> — place both angles so their corners (vertices) are exactly on top of each other.</span></div>
+        <div class="step"><span><strong>Match one arm</strong> — align one ray of each angle together.</span></div>
+        <div class="step"><span>Look at the other arm — the angle whose second arm is <strong>outside/further</strong> is the <strong>bigger</strong> angle!</span></div>
+        <div class="step"><span>If both second arms overlap perfectly → the angles are <strong>equal</strong>.</span></div>
+      </div>
+      <p style="margin-top:.5rem;">💡 <strong>Key idea:</strong> The angle that "sticks out more" after superimposing is the greater one.</p>
+    </div>
+
+    <div class="lcard">
+      <h3>⭕ Method 2 — Circular Paper (Without Superimposition)</h3>
+      <div id="learn-circle-canvas" style="display:flex;justify-content:center;margin:.4rem 0;"></div>
+      <div class="steps">
+        <div class="step"><span>Take a <strong>circular piece of transparent paper</strong> (or trace a circle).</span></div>
+        <div class="step"><span>Place its <strong>centre on the vertex</strong> of the first angle.</span></div>
+        <div class="step"><span>Mark the two points where the <strong>arms of the angle cross the circle</strong>.</span></div>
+        <div class="step"><span>Now place the same circle on the <strong>second angle</strong> (centre on vertex).</span></div>
+        <div class="step"><span>Compare the marked arc — the angle whose arc is <strong>longer</strong> is bigger!</span></div>
+      </div>
+      <p style="margin-top:.5rem;">💡 <strong>Key idea:</strong> A bigger angle "uses up" more of the circle. The arc it cuts is longer.</p>
+    </div>
+
+    <div class="lcard">
+      <h3>📏 Important Rules to Remember</h3>
+      <p>✅ <strong>Size of arms doesn't matter!</strong> An angle with short arms can still be bigger than one with long arms. Only the <em>opening/spread</em> between the arms counts.</p>
+      <p style="margin-top:.4rem;">✅ <strong>Position doesn't matter!</strong> An angle tilted sideways is the same size as the same angle standing upright.</p>
+      <p style="margin-top:.4rem;">✅ <strong>Both methods give the same answer</strong> — one just needs both angles together (superimposition), the other works separately (circular method).</p>
+    </div>
+  </div>
+
+  <!-- ══════ SUPERIMPOSE QUIZ ══════ -->
+  <div class="panel" id="panel-superimpose">
+    <div class="sbar">
+      <div class="spill sc">✅ Correct <span class="n" id="ssc">0</span></div>
+      <div class="spill sw">❌ Wrong <span class="n" id="ssw">0</span></div>
+      <div class="spill sq">📝 Q <span class="n" id="ssq">1</span>/10</div>
+    </div>
+    <div class="ibox blue"><strong>🔁 Superimposition Quiz:</strong> Watch the two angles being placed on top of each other. After superimposing, which angle is bigger — <strong>∠ABC</strong> or <strong>∠PQR</strong>? Or are they equal?</div>
+    <div class="superimpose-wrap">
+      <canvas id="sim-canvas" width="380" height="220" style="border-radius:12px;background:#f0f7ff;border:1.5px solid #dbeafe;max-width:100%;"></canvas>
+      <div class="sim-controls">
+        <button class="sim-btn active-btn" id="sim-sep" onclick="simShowState('separate')">Step 1: See both angles</button>
+        <button class="sim-btn" id="sim-over" onclick="simShowState('overlay')">Step 2: Superimpose!</button>
+      </div>
+    </div>
+    <div class="arow">
+      <button class="abtn" id="sa0" onclick="checkSim('ABC')">∠ABC is bigger</button>
+      <button class="abtn" id="sa1" onclick="checkSim('equal')">They are equal</button>
+      <button class="abtn" id="sa2" onclick="checkSim('PQR')">∠PQR is bigger</button>
+    </div>
+    <div class="fb" id="sim-fb"></div>
+    <button class="nav-btn" id="sim-next" onclick="nextSim()">Next Question →</button>
+    <button class="new-btn" onclick="startSim()">🔄 New Game</button>
+    <div class="endsc" id="sim-end">
+      <span class="tr" id="setr">🏆</span>
+      <h2 id="setitle"></h2>
+      <div class="sb" id="sescore"></div>
+      <p id="semsg"></p>
+      <button class="restart" onclick="startSim()">🎮 Play Again!</button>
+    </div>
+  </div>
+
+  <!-- ══════ CIRCULAR METHOD QUIZ ══════ -->
+  <div class="panel" id="panel-circular">
+    <div class="sbar">
+      <div class="spill sc">✅ Correct <span class="n" id="csc">0</span></div>
+      <div class="spill sw">❌ Wrong <span class="n" id="csw">0</span></div>
+      <div class="spill sq">📝 Q <span class="n" id="csq">1</span>/10</div>
+    </div>
+    <div class="ibox amber"><strong>⭕ Circular Paper Method:</strong> A circle is placed on each angle with its centre at the vertex. Look at the <strong>arc (coloured part)</strong> each angle cuts. Which arc is longer — that angle is bigger!</div>
+    <div class="circle-wrap">
+      <div class="circle-row">
+        <div class="circle-box">
+          <canvas id="circ-A" width="170" height="170" style="border-radius:50%;border:1.5px solid #dbeafe;background:#f0f7ff;"></canvas>
+          <div class="circle-label" id="circ-A-label">∠ABC</div>
+        </div>
+        <div style="font-family:'Baloo 2',cursive;font-size:1.4rem;font-weight:800;color:#9ca3af;align-self:center;">VS</div>
+        <div class="circle-box">
+          <canvas id="circ-B" width="170" height="170" style="border-radius:50%;border:1.5px solid #dbeafe;background:#f0f7ff;"></canvas>
+          <div class="circle-label" id="circ-B-label">∠PQR</div>
+        </div>
+      </div>
+    </div>
+    <div class="arow">
+      <button class="abtn" id="ca0" onclick="checkCirc('A')">∠ABC is bigger</button>
+      <button class="abtn" id="ca1" onclick="checkCirc('equal')">They are equal</button>
+      <button class="abtn" id="ca2" onclick="checkCirc('B')">∠PQR is bigger</button>
+    </div>
+    <div class="fb" id="circ-fb"></div>
+    <button class="nav-btn" id="circ-next" onclick="nextCirc()">Next Question →</button>
+    <button class="new-btn" onclick="startCirc()">🔄 New Game</button>
+    <div class="endsc" id="circ-end">
+      <span class="tr" id="cetr">🏆</span>
+      <h2 id="cetitle"></h2>
+      <div class="sb" id="cescore"></div>
+      <p id="cemsg"></p>
+      <button class="restart" onclick="startCirc()">🎮 Play Again!</button>
+    </div>
+  </div>
+
+  <!-- ══════ CHALLENGE ══════ -->
+  <div class="panel" id="panel-challenge">
+    <div class="ibox green"><strong>🏆 Challenge Round!</strong> Now BOTH angles are shown side by side — no superimposition, no circle hint. Just look carefully at the <strong>opening/spread</strong> of each angle and decide which is bigger!</div>
+    <div class="sbar">
+      <div class="spill sc">✅ Correct <span class="n" id="chsc">0</span></div>
+      <div class="spill sw">❌ Wrong <span class="n" id="chsw">0</span></div>
+      <div class="spill sq">📝 Q <span class="n" id="chsq">1</span>/8</div>
+    </div>
+    <div class="stage" id="ch-stage"></div>
+    <div class="ibox amber" style="font-size:.72rem;margin-top:.3rem;">⚠️ <strong>Tricky rule:</strong> The ARM LENGTH does not change the angle size! A short arm and a long arm can make the same angle. Judge only the OPENING between the arms.</div>
+    <div class="arow">
+      <button class="abtn" id="ch0" onclick="checkChallenge('A')">∠ABC is bigger</button>
+      <button class="abtn" id="ch1" onclick="checkChallenge('equal')">They are equal</button>
+      <button class="abtn" id="ch2" onclick="checkChallenge('B')">∠PQR is bigger</button>
+    </div>
+    <div class="fb" id="ch-fb"></div>
+    <button class="nav-btn" id="ch-next" onclick="nextChallenge()">Next →</button>
+    <button class="new-btn" onclick="startChallenge()">🔄 New Game</button>
+    <div class="endsc" id="ch-end">
+      <span class="tr" id="chetr">🏆</span>
+      <h2 id="chetitle"></h2>
+      <div class="sb" id="chescore"></div>
+      <p id="chemsg"></p>
+      <button class="restart" onclick="startChallenge()">🎮 Play Again!</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ═══ UTILS ═══ */
+function rnd(a,b){return Math.floor(Math.random()*(b-a+1))+a;}
+function confetti(n){
+  const cl=['#2563eb','#f59e0b','#22c55e','#f472b6','#a78bfa','#38bdf8'];
+  for(let i=0;i<n;i++){
+    const el=document.createElement('div');el.className='cf';
+    el.style.cssText=`left:${Math.random()*100}vw;top:-10px;background:${cl[Math.floor(Math.random()*cl.length)]};width:${rnd(6,11)}px;height:${rnd(6,11)}px;border-radius:${Math.random()>.5?'50%':'2px'};--d:${(.8+Math.random()*.8).toFixed(2)}s;--dl:${(Math.random()*.4).toFixed(2)}s;`;
+    document.body.appendChild(el);setTimeout(()=>el.remove(),1900);
+  }
+}
+function switchTab(id){
+  document.querySelectorAll('.tab').forEach((t,i)=>{t.classList.toggle('active',['learn','superimpose','circular','challenge'][i]===id);});
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+}
+function toRad(d){return d*Math.PI/180;}
+function drawAngle(ctx,cx,cy,angle_deg,armLen,color,label,showArc,arcColor){
+  const a=toRad(angle_deg);
+  ctx.strokeStyle=color;ctx.lineWidth=3;ctx.lineCap='round';
+  // base arm → right
+  ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+armLen,cy);ctx.stroke();
+  // second arm
+  ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+armLen*Math.cos(-a),cy+armLen*Math.sin(-a));ctx.stroke();
+  // vertex dot
+  ctx.fillStyle=color;ctx.beginPath();ctx.arc(cx,cy,5,0,Math.PI*2);ctx.fill();
+  // arc
+  if(showArc){
+    ctx.strokeStyle=arcColor;ctx.lineWidth=3;
+    ctx.beginPath();ctx.arc(cx,cy,30,0,-a,true);ctx.stroke();
+  }
+  // label
+  if(label){
+    ctx.fillStyle=color;ctx.font='bold 13px Baloo 2, sans-serif';
+    const lx=cx+armLen*0.5*Math.cos(-a/2);
+    const ly=cy+armLen*0.5*Math.sin(-a/2)-18;
+    ctx.fillText(label,lx,ly);
+  }
+}
+
+/* ═══ LEARN SVG ═══ */
+function drawLearnSuper(){
+  const wrap=document.getElementById('learn-super-canvas');wrap.innerHTML='';
+  const cv=document.createElement('canvas');cv.width=340;cv.height=190;cv.style.borderRadius='10px';cv.style.background='#f0f7ff';cv.style.border='1.5px solid #dbeafe';cv.style.maxWidth='100%';
+  wrap.appendChild(cv);
+  const ctx=cv.getContext('2d');
+  // Angle 1 on left
+  ctx.save();
+  drawAngle(ctx,70,140,55,90,'#2563eb','∠ABC',true,'#93c5fd');
+  ctx.restore();
+  // Angle 2 on right
+  ctx.save();
+  drawAngle(ctx,220,140,80,90,'#f59e0b','∠PQR',true,'#fcd34d');
+  ctx.restore();
+  // arrow
+  ctx.fillStyle='#9ca3af';ctx.font='bold 20px sans-serif';ctx.fillText('→',155,148);
+  // superimposed preview (small)
+  ctx.save();ctx.translate(300,140);
+  const a55=toRad(55),a80=toRad(80);
+  ctx.strokeStyle='#2563eb';ctx.lineWidth=2.5;ctx.lineCap='round';
+  ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(60,0);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(60*Math.cos(-a55),60*Math.sin(-a55));ctx.stroke();
+  ctx.strokeStyle='#ef4444';ctx.lineWidth=2.5;
+  ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(60*Math.cos(-a80),60*Math.sin(-a80));ctx.stroke();
+  ctx.fillStyle='#1e3a5f';ctx.beginPath();ctx.arc(0,0,4,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle='#6b7280';ctx.font='bold 9px Nunito,sans-serif';ctx.fillText('Superimposed',−28,14);
+  ctx.restore();
+  ctx.fillStyle='#1e40af';ctx.font='bold 11px Nunito,sans-serif';
+  ctx.fillText('Blue=∠ABC  Orange=∠PQR',170,175);
+}
+
+function drawLearnCircle(){
+  const wrap=document.getElementById('learn-circle-canvas');wrap.innerHTML='';
+  const cv=document.createElement('canvas');cv.width=340;cv.height=170;cv.style.borderRadius='10px';cv.style.background='#f0f7ff';cv.style.border='1.5px solid #dbeafe';cv.style.maxWidth='100%';
+  wrap.appendChild(cv);
+  const ctx=cv.getContext('2d');
+  function drawCircMethod(cx,cy,deg,arcCol,label){
+    const r=55,a=toRad(deg);
+    // circle
+    ctx.strokeStyle='#d1d5db';ctx.lineWidth=1.5;
+    ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.stroke();
+    // filled arc
+    ctx.fillStyle=arcCol+'55';
+    ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,0,-a,true);ctx.closePath();ctx.fill();
+    ctx.strokeStyle=arcCol;ctx.lineWidth=3;
+    ctx.beginPath();ctx.arc(cx,cy,r,0,-a,true);ctx.stroke();
+    // arms
+    ctx.strokeStyle='#1e3a5f';ctx.lineWidth=2.5;ctx.lineCap='round';
+    ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+r+12,cy);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+(r+12)*Math.cos(-a),cy+(r+12)*Math.sin(-a));ctx.stroke();
+    ctx.fillStyle='#1e3a5f';ctx.beginPath();ctx.arc(cx,cy,4,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#1e40af';ctx.font='bold 12px Baloo 2,sans-serif';ctx.textAlign='center';
+    ctx.fillText(label,cx,cy+r+20);
+    ctx.textAlign='left';
+  }
+  drawCircMethod(85,90,50,'#2563eb','∠ABC = 50°');
+  drawCircMethod(255,90,80,'#f59e0b','∠PQR = 80°');
+  ctx.fillStyle='#6b7280';ctx.font='bold 10px Nunito,sans-serif';ctx.textAlign='center';
+  ctx.fillText('Coloured arc shows angle size — longer arc = bigger angle',170,165);
+  ctx.textAlign='left';
+}
+
+/* ═══ SUPERIMPOSE QUIZ ═══ */
+let simData,simState='separate',simCor=0,simWr=0,simIdx=0,simDone=false;
+const SIM_TOTAL=10;
+
+function genSim(){
+  const modes=['less','greater','equal'];
+  const mode=modes[rnd(0,2)];
+  const a1=rnd(20,80);
+  let a2;
+  if(mode==='less')a2=rnd(a1+10,Math.min(a1+45,145));
+  else if(mode==='greater')a2=rnd(Math.max(a1-45,15),a1-10);
+  else a2=a1;
+  // arm lengths — vary them to show arms don't matter
+  const arm1=rnd(70,110),arm2=rnd(65,115);
+  simData={a1,a2,arm1,arm2,answer:mode==='less'?'PQR':mode==='greater'?'ABC':'equal'};
+  simState='separate';
+  document.getElementById('sim-sep').classList.add('active-btn');
+  document.getElementById('sim-over').classList.remove('active-btn');
+  drawSim();
+}
+
+function drawSim(){
+  const cv=document.getElementById('sim-canvas');
+  const ctx=cv.getContext('2d');
+  const W=cv.width,H=cv.height;
+  ctx.clearRect(0,0,W,H);
+  if(simState==='separate'){
+    // Angle ABC left
+    ctx.save();ctx.translate(90,H-40);
+    drawAngle(ctx,0,0,simData.a1,simData.arm1,'#2563eb','∠ABC',true,'#93c5fd');
+    ctx.restore();
+    // Angle PQR right
+    ctx.save();ctx.translate(270,H-40);
+    drawAngle(ctx,0,0,simData.a2,simData.arm2,'#f59e0b','∠PQR',true,'#fcd34d');
+    ctx.restore();
+    // labels
+    ctx.fillStyle='#6b7280';ctx.font='bold 11px Nunito,sans-serif';ctx.textAlign='center';
+    ctx.fillText('Two angles shown separately',W/2,20);ctx.textAlign='left';
+  } else {
+    // superimposed
+    ctx.save();ctx.translate(W/2,H-40);
+    const a1=toRad(simData.a1),a2=toRad(simData.a2);
+    const armL=100;
+    // shared base arm
+    ctx.strokeStyle='#374151';ctx.lineWidth=3.5;ctx.lineCap='round';
+    ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(armL,0);ctx.stroke();
+    // ABC arm (blue)
+    ctx.strokeStyle='#2563eb';ctx.lineWidth=3;
+    ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(armL*Math.cos(-a1),armL*Math.sin(-a1));ctx.stroke();
+    ctx.arc(0,0,28,0,-a1,true);// arc
+    ctx.strokeStyle='#93c5fd';ctx.lineWidth=2.5;
+    ctx.beginPath();ctx.arc(0,0,28,0,-a1,true);ctx.stroke();
+    // PQR arm (orange)
+    ctx.strokeStyle='#f59e0b';ctx.lineWidth=3;
+    ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(armL*Math.cos(-a2),armL*Math.sin(-a2));ctx.stroke();
+    ctx.strokeStyle='#fcd34d';ctx.lineWidth=2.5;
+    ctx.beginPath();ctx.arc(0,0,38,0,-a2,true);ctx.stroke();
+    // vertex
+    ctx.fillStyle='#374151';ctx.beginPath();ctx.arc(0,0,5,0,Math.PI*2);ctx.fill();
+    ctx.restore();
+    // legend
+    ctx.font='bold 11px Nunito,sans-serif';
+    ctx.fillStyle='#2563eb';ctx.fillText('— ∠ABC (blue)',14,22);
+    ctx.fillStyle='#f59e0b';ctx.fillText('— ∠PQR (orange)',14,38);
+    ctx.fillStyle='#6b7280';ctx.font='bold 10px Nunito,sans-serif';ctx.textAlign='center';
+    ctx.fillText('Vertex & one arm matched. Which arm is outside?',W/2,H-12);ctx.textAlign='left';
+  }
+}
+
+function simShowState(s){
+  simState=s;
+  document.getElementById('sim-sep').classList.toggle('active-btn',s==='separate');
+  document.getElementById('sim-over').classList.toggle('active-btn',s==='overlay');
+  drawSim();
+}
+
+function checkSim(choice){
+  if(simDone)return;simDone=true;
+  ['sa0','sa1','sa2'].forEach(id=>document.getElementById(id).disabled=true);
+  const choiceMap={'ABC':'sa0','equal':'sa1','PQR':'sa2'};
+  const ansMap={'ABC':'sa0','equal':'sa1','PQR':'sa2'};
+  document.getElementById(choiceMap[choice]).classList.add('sel');
+  setTimeout(()=>{
+    const fb=document.getElementById('sim-fb');
+    const correct=simData.answer===choice;
+    if(correct){simCor++;fb.className='fb fok show';fb.innerHTML=`✅ <strong>Correct!</strong> ${simData.answer==='equal'?'Both angles are equal!':simData.answer==='ABC'?'∠ABC is bigger! Its arm sticks out more after superimposing.':'∠PQR is bigger! Its arm sticks out more after superimposing.'}`;confetti(6);}
+    else{simWr++;document.getElementById(choiceMap[choice]).classList.remove('sel');document.getElementById(choiceMap[choice]).classList.add('no');document.getElementById(ansMap[simData.answer]).classList.add('ok');fb.className='fb fno show';fb.innerHTML=`❌ The answer is <strong>${simData.answer==='equal'?'Equal':simData.answer==='ABC'?'∠ABC bigger':'∠PQR bigger'}</strong>. Look at Step 2 — superimpose and see which arm is outside!`;}
+    document.getElementById('ssc').textContent=simCor;document.getElementById('ssw').textContent=simWr;
+    simShowState('overlay');
+    const nb=document.getElementById('sim-next');nb.classList.add('show');
+    nb.textContent=simIdx>=SIM_TOTAL?'See Results 🏆':'Next →';
+  },280);
+}
+
+function nextSim(){
+  if(simIdx>=SIM_TOTAL){showSimEnd();return;}
+  simIdx++;document.getElementById('ssq').textContent=Math.min(simIdx,SIM_TOTAL);
+  simDone=false;['sa0','sa1','sa2'].forEach(id=>{const b=document.getElementById(id);b.className='abtn';b.disabled=false;});
+  document.getElementById('sim-fb').className='fb';document.getElementById('sim-next').classList.remove('show');
+  genSim();
+}
+
+function showSimEnd(){
+  document.getElementById('sim-end').classList.add('show');
+  const pct=simCor/SIM_TOTAL;
+  let tr='🏆',ti='',mg='';
+  if(pct===1){tr='🥇';ti='Perfect!';mg='You mastered superimposition!';}
+  else if(pct>=.8){tr='🌟';ti='Excellent!';mg=`${simCor}/${SIM_TOTAL} — Great angle comparing!`;}
+  else if(pct>=.6){tr='👍';ti='Good Job!';mg=`${simCor}/${SIM_TOTAL} — Revisit the Learn tab!`;}
+  else{tr='💪';ti='Keep Trying!';mg=`${simCor}/${SIM_TOTAL} — Study Step 2 (overlay) carefully!`;}
+  document.getElementById('setr').textContent=tr;document.getElementById('setitle').textContent=ti;
+  document.getElementById('sescore').textContent=`${simCor}/${SIM_TOTAL}`;document.getElementById('semsg').textContent=mg;
+  if(pct>=.8)confetti(20);
+}
+
+function startSim(){
+  simCor=0;simWr=0;simIdx=1;simDone=false;
+  document.getElementById('sim-end').classList.remove('show');
+  document.getElementById('ssc').textContent=0;document.getElementById('ssw').textContent=0;document.getElementById('ssq').textContent=1;
+  ['sa0','sa1','sa2'].forEach(id=>{const b=document.getElementById(id);b.className='abtn';b.disabled=false;});
+  document.getElementById('sim-fb').className='fb';document.getElementById('sim-next').classList.remove('show');
+  genSim();
+}
+
+/* ═══ CIRCULAR METHOD QUIZ ═══ */
+let circData,circCor=0,circWr=0,circIdx=0,circDone=false;
+const CIRC_TOTAL=10;
+
+function genCirc(){
+  const modes=['less','greater','equal'];
+  const mode=modes[rnd(0,2)];
+  const a1=rnd(20,80);
+  let a2;
+  if(mode==='less')a2=rnd(a1+12,Math.min(a1+50,150));
+  else if(mode==='greater')a2=rnd(Math.max(a1-50,15),a1-12);
+  else a2=a1;
+  const arm1=rnd(55,80),arm2=rnd(55,80);
+  circData={a1,a2,arm1,arm2,answer:mode==='less'?'B':mode==='greater'?'A':'equal'};
+  // label names
+  const namesA=[['ABC','PQR'],['XYZ','MNO'],['DEF','STU'],['LMN','PQS']];
+  const n=namesA[rnd(0,namesA.length-1)];
+  circData.nameA='∠'+n[0];circData.nameB='∠'+n[1];
+  document.getElementById('circ-A-label').textContent=circData.nameA;
+  document.getElementById('circ-B-label').textContent=circData.nameB;
+  document.getElementById('ca0').textContent=circData.nameA+' is bigger';
+  document.getElementById('ca2').textContent=circData.nameB+' is bigger';
+  drawCircQuiz();
+}
+
+function drawCircQuiz(){
+  drawCircCanvas('circ-A',circData.a1,circData.arm1,'#2563eb','#93c5fd');
+  drawCircCanvas('circ-B',circData.a2,circData.arm2,'#f59e0b','#fcd34d');
+}
+
+function drawCircCanvas(id,deg,armLen,color,arcColor){
+  const cv=document.getElementById(id);
+  const ctx=cv.getContext('2d');
+  const W=cv.width,H=cv.height;
+  ctx.clearRect(0,0,W,H);
+  const cx=W/2,cy=H/2,r=62;
+  const a=toRad(deg);
+  // full circle
+  ctx.strokeStyle='#d1d5db';ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.stroke();
+  // filled arc sector
+  ctx.fillStyle=arcColor+'44';
+  ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,0,-a,true);ctx.closePath();ctx.fill();
+  // arc stroke
+  ctx.strokeStyle=arcColor;ctx.lineWidth=4;
+  ctx.beginPath();ctx.arc(cx,cy,r,0,-a,true);ctx.stroke();
+  // arms
+  ctx.strokeStyle=color;ctx.lineWidth=3;ctx.lineCap='round';
+  ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+armLen,cy);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+armLen*Math.cos(-a),cy+armLen*Math.sin(-a));ctx.stroke();
+  // vertex
+  ctx.fillStyle=color;ctx.beginPath();ctx.arc(cx,cy,5,0,Math.PI*2);ctx.fill();
+  // degree label in arc
+  const midA=-a/2;
+  ctx.fillStyle=color;ctx.font='bold 11px Baloo 2,sans-serif';ctx.textAlign='center';
+  ctx.fillText(deg+'°',cx+(r*0.65)*Math.cos(midA),cy+(r*0.65)*Math.sin(midA)+4);
+  ctx.textAlign='left';
+}
+
+function checkCirc(choice){
+  if(circDone)return;circDone=true;
+  ['ca0','ca1','ca2'].forEach(id=>document.getElementById(id).disabled=true);
+  const choiceMap={'A':'ca0','equal':'ca1','B':'ca2'};
+  document.getElementById(choiceMap[choice]).classList.add('sel');
+  setTimeout(()=>{
+    const fb=document.getElementById('circ-fb');
+    const correct=circData.answer===choice;
+    const ansName=circData.answer==='A'?circData.nameA:circData.answer==='B'?circData.nameB:'Equal';
+    if(correct){circCor++;fb.className='fb fok show';fb.innerHTML=`✅ <strong>Correct!</strong> ${circData.answer==='equal'?'Both arcs are the same length — angles are equal!':ansName+' has a longer arc on the circle, so it is bigger!'}`;confetti(6);}
+    else{circWr++;document.getElementById(choiceMap[choice]).classList.remove('sel');document.getElementById(choiceMap[choice]).classList.add('no');document.getElementById(choiceMap[circData.answer]).classList.add('ok');fb.className='fb fno show';fb.innerHTML=`❌ Answer: <strong>${ansName}</strong>. Compare the coloured arcs — a longer arc means a bigger angle!`;}
+    document.getElementById('csc').textContent=circCor;document.getElementById('csw').textContent=circWr;
+    const nb=document.getElementById('circ-next');nb.classList.add('show');
+    nb.textContent=circIdx>=CIRC_TOTAL?'See Results 🏆':'Next →';
+  },280);
+}
+
+function nextCirc(){
+  if(circIdx>=CIRC_TOTAL){showCircEnd();return;}
+  circIdx++;document.getElementById('csq').textContent=Math.min(circIdx,CIRC_TOTAL);
+  circDone=false;['ca0','ca1','ca2'].forEach(id=>{const b=document.getElementById(id);b.className='abtn';b.disabled=false;});
+  document.getElementById('circ-fb').className='fb';document.getElementById('circ-next').classList.remove('show');
+  genCirc();
+}
+
+function showCircEnd(){
+  document.getElementById('circ-end').classList.add('show');
+  const pct=circCor/CIRC_TOTAL;
+  let tr='🏆',ti='',mg='';
+  if(pct===1){tr='🥇';ti='Perfect!';mg='Arc comparison master!';}
+  else if(pct>=.8){tr='🌟';ti='Excellent!';mg=`${circCor}/${CIRC_TOTAL} — Great circular method skills!`;}
+  else{tr='💪';ti='Keep Going!';mg=`${circCor}/${CIRC_TOTAL} — Remember: longer arc = bigger angle!`;}
+  document.getElementById('cetr').textContent=tr;document.getElementById('cetitle').textContent=ti;
+  document.getElementById('cescore').textContent=`${circCor}/${CIRC_TOTAL}`;document.getElementById('cemsg').textContent=mg;
+  if(pct>=.8)confetti(20);
+}
+
+function startCirc(){
+  circCor=0;circWr=0;circIdx=1;circDone=false;
+  document.getElementById('circ-end').classList.remove('show');
+  document.getElementById('csc').textContent=0;document.getElementById('csw').textContent=0;document.getElementById('csq').textContent=1;
+  ['ca0','ca1','ca2'].forEach(id=>{const b=document.getElementById(id);b.className='abtn';b.disabled=false;});
+  document.getElementById('circ-fb').className='fb';document.getElementById('circ-next').classList.remove('show');
+  genCirc();
+}
+
+/* ═══ CHALLENGE ═══ */
+let chData=[],chIdx_q=0,chCor=0,chWr=0,chDone=false;
+const CH_TOTAL=8;
+
+function genChallenge(){
+  const modes=['less','greater','equal','tricky-arms'];
+  const mode=modes[rnd(0,modes.length-1)];
+  let a1=rnd(20,75),a2;
+  let arm1=rnd(60,110),arm2=rnd(60,110);
+  if(mode==='less'){a2=rnd(a1+15,Math.min(a1+55,150));}
+  else if(mode==='greater'){a2=rnd(Math.max(a1-55,15),a1-15);}
+  else if(mode==='equal'){a2=a1;arm2=rnd(40,90);} // different arm but same angle
+  else{a2=rnd(15,70);arm1=rnd(90,120);arm2=rnd(35,55);} // big arms vs small arms
+  const answer=a1>a2?'A':a1<a2?'B':'equal';
+  const namesA=[['ABC','PQR'],['XYZ','MNO'],['DEF','STU'],['LMN','PQS']];
+  const n=namesA[rnd(0,namesA.length-1)];
+  return{a1,a2,arm1,arm2,answer,nameA:'∠'+n[0],nameB:'∠'+n[1],tricky:mode==='equal'||mode==='tricky-arms'};
+}
+
+function drawChallengeAngle(canvasId,deg,armLen,color){
+  const cv=document.getElementById(canvasId);if(!cv)return;
+  const ctx=cv.getContext('2d');
+  const W=cv.width,H=cv.height;
+  ctx.clearRect(0,0,W,H);
+  const cx=30,cy=H-30;
+  const a=toRad(deg);
+  ctx.strokeStyle=color;ctx.lineWidth=3.5;ctx.lineCap='round';
+  ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+armLen,cy);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+armLen*Math.cos(-a),cy+armLen*Math.sin(-a));ctx.stroke();
+  ctx.strokeStyle=color+'88';ctx.lineWidth=2.5;
+  ctx.beginPath();ctx.arc(cx,cy,32,0,-a,true);ctx.stroke();
+  ctx.fillStyle=color;ctx.beginPath();ctx.arc(cx,cy,5,0,Math.PI*2);ctx.fill();
+}
+
+function renderChallenge(){
+  const d=chData[chIdx_q];
+  const stage=document.getElementById('ch-stage');stage.innerHTML='';
+  const boxW=Math.max(d.arm1+60,140),boxH=Math.max(d.arm1*Math.sin(toRad(d.a1))+70,130);
+  const boxW2=Math.max(d.arm2+60,140),boxH2=Math.max(d.arm2*Math.sin(toRad(d.a2))+70,130);
+  function makeBox(name,cid,w,h,color){
+    const wrap=document.createElement('div');wrap.className='angle-box';
+    const lbl=document.createElement('div');lbl.className='angle-label';lbl.style.color=color;lbl.textContent=name;
+    const cv=document.createElement('canvas');cv.id=cid;cv.width=w;cv.height=h;cv.style.background='#f8faff';cv.style.borderRadius='10px';cv.style.maxWidth='100%';
+    wrap.appendChild(lbl);wrap.appendChild(cv);return wrap;
+  }
+  stage.appendChild(makeBox(d.nameA,'ch-cv-A',boxW,boxH,'#2563eb'));
+  const vs=document.createElement('div');vs.style.cssText='font-family:Baloo 2,cursive;font-size:1.3rem;font-weight:800;color:#9ca3af;align-self:center;padding-top:10px;';vs.textContent='VS';stage.appendChild(vs);
+  stage.appendChild(makeBox(d.nameB,'ch-cv-B',boxW2,boxH2,'#f59e0b'));
+  setTimeout(()=>{drawChallengeAngle('ch-cv-A',d.a1,d.arm1,'#2563eb');drawChallengeAngle('ch-cv-B',d.a2,d.arm2,'#f59e0b');},0);
+  document.getElementById('ch0').textContent=d.nameA+' is bigger';
+  document.getElementById('ch2').textContent=d.nameB+' is bigger';
+}
+
+function checkChallenge(choice){
+  if(chDone)return;chDone=true;
+  ['ch0','ch1','ch2'].forEach(id=>document.getElementById(id).disabled=true);
+  const d=chData[chIdx_q];
+  const choiceMap={'A':'ch0','equal':'ch1','B':'ch2'};
+  document.getElementById(choiceMap[choice]).classList.add('sel');
+  setTimeout(()=>{
+    const fb=document.getElementById('ch-fb');
+    const correct=d.answer===choice;
+    const ansName=d.answer==='A'?d.nameA:d.answer==='B'?d.nameB:'Equal';
+    if(correct){
+      chCor++;fb.className='fb fok show';
+      fb.innerHTML=`✅ <strong>Correct!</strong> ${d.answer==='equal'?'Both angles have the same opening — they are equal! (Arm length doesn\'t change the angle.)':'The arc of '+ansName+' is wider — it is the bigger angle!'}`;
+      confetti(8);
+      if(d.tricky)fb.innerHTML+=' 🎯 <em>Nice catch on the tricky one!</em>';
+    } else {
+      chWr++;
+      document.getElementById(choiceMap[choice]).classList.remove('sel');
+      document.getElementById(choiceMap[choice]).classList.add('no');
+      document.getElementById(choiceMap[d.answer]).classList.add('ok');
+      fb.className='fb fno show';
+      fb.innerHTML=`❌ Answer: <strong>${ansName}</strong>. ${d.answer==='equal'?'Arm lengths were different but the angle OPENING was the same!':'Look at the arc (the curve) — it shows the actual size of the opening!'}`;
+    }
+    document.getElementById('chsc').textContent=chCor;document.getElementById('chsw').textContent=chWr;
+    const nb=document.getElementById('ch-next');nb.classList.add('show');
+    nb.textContent=chIdx_q>=CH_TOTAL-1?'See Results 🏆':'Next →';
+  },280);
+}
+
+function nextChallenge(){
+  if(chIdx_q>=CH_TOTAL-1){showChEnd();return;}
+  chIdx_q++;document.getElementById('chsq').textContent=chIdx_q+1;
+  chDone=false;['ch0','ch1','ch2'].forEach(id=>{const b=document.getElementById(id);b.className='abtn';b.disabled=false;});
+  document.getElementById('ch-fb').className='fb';document.getElementById('ch-next').classList.remove('show');
+  renderChallenge();
+}
+
+function showChEnd(){
+  document.getElementById('ch-end').classList.add('show');
+  const pct=chCor/CH_TOTAL;
+  let tr='🏆',ti='',mg='';
+  if(pct===1){tr='🥇';ti='Champion!';mg='All 8 correct — you nailed the tricky arm-length ones too!';}
+  else if(pct>=.75){tr='🌟';ti='Excellent!';mg=`${chCor}/${CH_TOTAL} — Great visual angle sense!`;}
+  else if(pct>=.5){tr='👍';ti='Good!';mg=`${chCor}/${CH_TOTAL} — Remember arm length ≠ angle size!`;}
+  else{tr='💪';ti='Practice More!';mg=`${chCor}/${CH_TOTAL} — Go back to Learn tab and try again!`;}
+  document.getElementById('chetr').textContent=tr;document.getElementById('chetitle').textContent=ti;
+  document.getElementById('chescore').textContent=`${chCor}/${CH_TOTAL}`;document.getElementById('chemsg').textContent=mg;
+  if(pct>=.75)confetti(25);
+}
+
+function startChallenge(){
+  chCor=0;chWr=0;chIdx_q=0;chDone=false;
+  chData=Array.from({length:CH_TOTAL},()=>genChallenge());
+  document.getElementById('ch-end').classList.remove('show');
+  document.getElementById('chsc').textContent=0;document.getElementById('chsw').textContent=0;document.getElementById('chsq').textContent=1;
+  ['ch0','ch1','ch2'].forEach(id=>{const b=document.getElementById(id);b.className='abtn';b.disabled=false;});
+  document.getElementById('ch-fb').className='fb';document.getElementById('ch-next').classList.remove('show');
+  renderChallenge();
+}
+
+/* ═══ BOOT ═══ */
+drawLearnSuper();
+drawLearnCircle();
+startSim();
+startCirc();
+startChallenge();
+</script>
+</body>
+</html>
