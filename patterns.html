@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Patterns in Mathematics 🔴 | Class 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Nunito',sans-serif;background:#fffbf5;color:#1c1410;min-height:100vh;overflow-x:hidden;}
+
+/* ── VARIABLES ── */
+:root{
+  --red:#e84040;--red-l:#fef0f0;--red-m:#fca5a5;
+  --orange:#f97316;--orange-l:#fff7ed;
+  --yellow:#f59e0b;--yellow-l:#fefce8;
+  --green:#22c55e;--green-l:#f0fdf4;
+  --blue:#3b82f6;--blue-l:#eff6ff;
+  --purple:#8b5cf6;--purple-l:#f5f3ff;
+  --brown:#92400e;
+  --card:#fff;
+  --border:#f3e8d8;
+  --text:#1c1410;
+  --sub:#6b5e4e;
+  --shadow:rgba(180,120,60,.12);
+}
+
+/* ── BACKGROUND PATTERN ── */
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:radial-gradient(circle,#e8420015 1px,transparent 1px);
+  background-size:28px 28px;
+  pointer-events:none;z-index:0;
+}
+
+.wrapper{position:relative;z-index:1;max-width:920px;margin:0 auto;padding:0 1rem 3rem;}
+
+/* ── HEADER ── */
+.header{text-align:center;padding:2.2rem 1rem 1rem;}
+.header .eyebrow{font-family:'Baloo 2',cursive;font-size:.75rem;letter-spacing:3px;text-transform:uppercase;color:var(--orange);font-weight:700;margin-bottom:.5rem;}
+.header h1{font-family:'Baloo 2',cursive;font-size:clamp(2rem,6vw,3rem);font-weight:800;line-height:1.1;margin-bottom:.4rem;}
+.header h1 em{font-style:normal;color:var(--red);}
+.header p{color:var(--sub);font-size:.95rem;font-weight:600;max-width:500px;margin:0 auto;}
+
+/* ── TABS ── */
+.tabs{display:flex;background:var(--card);border-radius:16px 16px 0 0;border:2px solid var(--border);border-bottom:none;margin:.8rem .3rem 0;overflow:hidden;}
+.tab{flex:1;padding:.6rem .3rem;font-family:'Baloo 2',cursive;font-size:.82rem;font-weight:700;border:none;background:transparent;cursor:pointer;color:#9ca3af;transition:all .2s;border-bottom:3px solid transparent;}
+.tab.active{color:var(--red);background:#fff8f5;border-bottom-color:var(--red);}
+.tab:hover:not(.active){background:#fafafa;}
+
+.panel{display:none;background:var(--card);border:2px solid var(--border);border-top:none;border-radius:0 0 16px 16px;margin:0 .3rem;padding:.7rem .6rem .9rem;}
+.panel.active{display:block;}
+
+/* ── RULE BOX ── */
+.rbox{background:#fff8f0;border:1.5px solid #fed7aa;border-radius:12px;padding:.5rem .9rem;margin:.35rem .1rem .6rem;font-size:.76rem;color:#92400e;font-weight:700;line-height:1.5;}
+.rbox strong{color:var(--red);}
+
+/* ── SECTION LABEL ── */
+.slabel{font-family:'Baloo 2',cursive;font-size:.88rem;font-weight:800;color:var(--brown);margin:.5rem .1rem .3rem;display:flex;align-items:center;gap:.4rem;}
+
+/* ── DOT CANVAS ── */
+.dot-stage{display:flex;gap:1.5rem;flex-wrap:wrap;justify-content:center;background:#fffbf5;border-radius:12px;border:1.5px solid var(--border);padding:.8rem .5rem;min-height:160px;align-items:flex-end;overflow-x:auto;}
+.dot-group{display:flex;flex-direction:column;align-items:center;gap:4px;flex-shrink:0;}
+.dot-grid{display:flex;flex-direction:column;gap:3px;align-items:center;}
+.dot-row{display:flex;gap:3px;}
+.dot{width:clamp(10px,2.2vw,14px);height:clamp(10px,2.2vw,14px);border-radius:50%;transition:transform .3s,opacity .3s;}
+.dot.red{background:var(--red);box-shadow:0 1px 3px rgba(232,64,64,.4);}
+.dot.blue{background:var(--blue);box-shadow:0 1px 3px rgba(59,130,246,.4);}
+.dot.green{background:var(--green);box-shadow:0 1px 3px rgba(34,197,94,.4);}
+.dot.orange{background:var(--orange);box-shadow:0 1px 3px rgba(249,115,22,.4);}
+.dot.purple{background:var(--purple);box-shadow:0 1px 3px rgba(139,92,246,.4);}
+.dot.empty{background:#f3e8d8;border:1.5px dashed #d4b896;}
+.dot.hidden{opacity:0;transform:scale(0);}
+.dot.pop{animation:dotPop .4s cubic-bezier(.34,1.56,.64,1) forwards;}
+@keyframes dotPop{from{opacity:0;transform:scale(0);}to{opacity:1;transform:scale(1);}}
+.dot-label{font-family:'Baloo 2',cursive;font-size:.78rem;font-weight:800;color:var(--sub);}
+.dot-num{font-family:'Baloo 2',cursive;font-size:1rem;font-weight:800;color:var(--red);}
+.dot-name{font-size:.62rem;font-weight:700;color:var(--sub);text-align:center;}
+
+/* ── SEQUENCE STRIP ── */
+.seq-strip{display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:center;background:#fff8f5;border-radius:10px;padding:.5rem .4rem;margin:.3rem 0;}
+.seq-num{font-family:'Baloo 2',cursive;font-size:1.1rem;font-weight:800;width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;border:2px solid;}
+.seq-num.red-n{background:var(--red-l);border-color:var(--red-m);color:var(--red);}
+.seq-num.blue-n{background:var(--blue-l);border-color:#93c5fd;color:var(--blue);}
+.seq-num.green-n{background:var(--green-l);border-color:#86efac;color:var(--green);}
+.seq-num.orange-n{background:var(--orange-l);border-color:#fed7aa;color:var(--orange);}
+.seq-num.purple-n{background:var(--purple-l);border-color:#c4b5fd;color:var(--purple);}
+.seq-arrow{color:#9ca3af;font-size:.8rem;font-weight:800;}
+.seq-q{background:#f9fafb;border:2px dashed #d1d5db;color:#9ca3af;font-size:1.1rem;}
+
+/* ── BUTTONS ── */
+.btn{font-family:'Baloo 2',cursive;font-size:.82rem;font-weight:700;border:none;border-radius:50px;padding:.4rem 1rem;cursor:pointer;transition:transform .15s,box-shadow .15s;}
+.btn:hover{transform:scale(1.04);}
+.btn-red{background:linear-gradient(135deg,var(--red),#f87171);color:#fff;box-shadow:0 3px 10px rgba(232,64,64,.3);}
+.btn-orange{background:linear-gradient(135deg,var(--orange),#fb923c);color:#fff;box-shadow:0 3px 10px rgba(249,115,22,.3);}
+.btn-green{background:linear-gradient(135deg,var(--green),#4ade80);color:#fff;}
+.btn-gray{background:#fff;color:var(--brown);border:1.5px solid var(--border);}
+.btn-row{display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap;margin-top:.6rem;}
+
+/* ── SCORE ── */
+.sbar{display:flex;gap:.4rem;flex-wrap:wrap;justify-content:center;padding:.3rem .1rem .4rem;}
+.spill{display:flex;align-items:center;gap:.25rem;background:#fff8f5;border-radius:50px;padding:.22rem .65rem;font-weight:800;font-size:.72rem;border:1.5px solid var(--border);}
+.spill .n{font-family:'Baloo 2',cursive;font-size:.9rem;}
+.sc .n{color:var(--green);} .sw .n{color:var(--red);} .sq .n{color:var(--orange);}
+
+/* ── QUIZ CARD ── */
+.qcard{background:var(--card);border-radius:14px;padding:.8rem 1rem;box-shadow:0 3px 14px var(--shadow);border:1.5px solid var(--border);text-align:center;}
+.qemoji{font-size:1.5rem;display:block;margin-bottom:.2rem;}
+.qtext{font-family:'Baloo 2',cursive;font-size:clamp(.9rem,2.8vw,1.05rem);font-weight:700;color:var(--text);line-height:1.35;}
+.qtext strong{color:var(--red);}
+.arow{display:flex;gap:.4rem;flex-wrap:wrap;align-items:center;justify-content:center;margin-top:.6rem;}
+.abtn{font-family:'Baloo 2',cursive;font-size:1rem;font-weight:700;min-width:54px;height:50px;padding:0 .8rem;border-radius:12px;border:2.5px solid var(--border);background:#fffbf5;color:var(--text);cursor:pointer;transition:all .15s;}
+.abtn:hover:not(:disabled){border-color:var(--red);background:var(--red-l);color:var(--red);transform:scale(1.08);}
+.abtn.sel{border-color:var(--red);background:var(--red);color:#fff;}
+.abtn:disabled{cursor:default;pointer-events:none;}
+.abtn.ok{border-color:var(--green)!important;background:var(--green)!important;color:#fff!important;}
+.abtn.no{border-color:var(--red)!important;background:var(--red)!important;color:#fff!important;}
+.fb{margin-top:.55rem;border-radius:10px;padding:.5rem .8rem;font-weight:800;font-size:.8rem;display:none;align-items:center;gap:.35rem;justify-content:center;line-height:1.3;flex-wrap:wrap;}
+.fb.show{display:flex;}
+.fb.fok{background:var(--green-l);color:#166534;border:1.5px solid #86efac;}
+.fb.fno{background:var(--red-l);color:#991b1b;border:1.5px solid var(--red-m);}
+.bn{margin-top:.55rem;display:none;font-family:'Baloo 2',cursive;font-size:.88rem;font-weight:700;background:linear-gradient(135deg,var(--red),#f87171);color:#fff;border:none;border-radius:50px;padding:.45rem 1.4rem;cursor:pointer;transition:transform .15s;}
+.bn.show{display:inline-block;}
+.bn:hover{transform:translateY(-2px);}
+
+/* ── DISCOVER CARD ── */
+.disc-card{background:linear-gradient(135deg,#fef3c7,#fde68a);border:1.5px solid #fcd34d;border-radius:14px;padding:.8rem 1rem;text-align:center;margin:.4rem .1rem;}
+.disc-card h3{font-family:'Baloo 2',cursive;font-size:.95rem;font-weight:800;color:#92400e;margin-bottom:.35rem;}
+.disc-card p{font-size:.76rem;color:#78350f;font-weight:700;line-height:1.45;}
+
+/* ── LEARN CARDS ── */
+.lcard{background:var(--card);border-radius:12px;padding:.7rem .9rem;margin-bottom:.6rem;border:1.5px solid var(--border);box-shadow:0 2px 8px var(--shadow);}
+.lcard h3{font-family:'Baloo 2',cursive;font-size:.9rem;font-weight:800;color:var(--red);margin-bottom:.3rem;}
+.lcard p{font-size:.74rem;color:#4b5563;font-weight:600;line-height:1.45;}
+.lcard p strong{color:var(--text);}
+.pattern-preview{display:flex;align-items:flex-end;gap:10px;justify-content:center;background:#fffbf5;border-radius:8px;padding:.45rem .3rem .3rem;margin:.3rem 0;flex-wrap:wrap;}
+.pp-item{display:flex;flex-direction:column;align-items:center;gap:2px;}
+.pp-num{font-family:'Baloo 2',cursive;font-size:.82rem;font-weight:800;color:var(--red);}
+
+/* ── ODD TRICK ── */
+.odd-row{display:flex;align-items:center;gap:.4rem;justify-content:center;flex-wrap:wrap;margin:.3rem 0;font-family:'Baloo 2',cursive;font-size:.85rem;font-weight:700;color:var(--text);}
+.odd-chip{background:var(--orange-l);border:1.5px solid #fed7aa;color:var(--orange);border-radius:8px;padding:2px 8px;}
+.odd-eq{color:var(--sub);}
+.odd-sq{background:var(--blue-l);border:1.5px solid #93c5fd;color:var(--blue);border-radius:8px;padding:2px 8px;}
+
+/* ── END SCREEN ── */
+.endsc{background:var(--card);border-radius:14px;padding:1.3rem 1rem;margin:.3rem .1rem;text-align:center;border:1.5px solid var(--border);display:none;}
+.endsc.show{display:block;}
+.endsc .tr{font-size:2.5rem;display:block;margin-bottom:.3rem;}
+.endsc h2{font-family:'Baloo 2',cursive;font-size:1.4rem;font-weight:800;color:var(--red);}
+.endsc .sb{font-family:'Baloo 2',cursive;font-size:2.2rem;font-weight:800;color:var(--green);margin:.2rem 0;}
+.endsc p{color:var(--sub);font-size:.82rem;font-weight:600;}
+.btr{margin-top:.7rem;font-family:'Baloo 2',cursive;font-size:.9rem;font-weight:700;background:linear-gradient(135deg,var(--red),#f87171);color:#fff;border:none;border-radius:50px;padding:.5rem 1.5rem;cursor:pointer;}
+
+/* ── CONFETTI ── */
+.cf{position:fixed;pointer-events:none;z-index:9999;animation:cfall var(--d) var(--dl) ease-in forwards;}
+@keyframes cfall{0%{opacity:1;transform:translateY(0) rotate(0);}100%{opacity:0;transform:translateY(100vh) rotate(720deg);}}
+
+/* ── BUILD MODE ── */
+.build-area{display:flex;flex-direction:column;align-items:center;gap:.6rem;padding:.4rem 0;}
+.build-dot-grid{display:flex;flex-direction:column;gap:4px;align-items:center;}
+.build-dot{width:clamp(18px,4vw,26px);height:clamp(18px,4vw,26px);border-radius:50%;cursor:pointer;border:2px solid #d4b896;background:#f3e8d8;transition:all .2s;flex-shrink:0;}
+.build-dot.filled{background:var(--red);border-color:var(--red-m);box-shadow:0 1px 4px rgba(232,64,64,.4);}
+.build-dot:hover{border-color:var(--red);background:var(--red-l);}
+.build-hint{font-size:.72rem;font-weight:700;color:var(--sub);text-align:center;}
+.build-counter{font-family:'Baloo 2',cursive;font-size:1.2rem;font-weight:800;color:var(--red);}
+.build-fb{border-radius:10px;padding:.45rem .8rem;font-weight:800;font-size:.8rem;text-align:center;margin-top:.3rem;}
+.build-fb.fok{background:var(--green-l);color:#166534;border:1.5px solid #86efac;}
+.build-fb.fno{background:var(--red-l);color:#991b1b;border:1.5px solid var(--red-m);}
+.build-fb.finfo{background:var(--blue-l);color:#1e40af;border:1.5px solid #93c5fd;}
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+<!-- HEADER -->
+<div class="header">
+  <div class="eyebrow">Ganit Prakash · Class 6 · Chapter 1</div>
+  <h1>Patterns in <em>Mathematics</em> 🔴</h1>
+  <p>Build dots, discover sequences, and see WHY numbers get their names!</p>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <button class="tab active" onclick="switchTab('explore')">🔴 Explore</button>
+  <button class="tab" onclick="switchTab('build')">🧩 Build</button>
+  <button class="tab" onclick="switchTab('quiz')">📝 Quiz</button>
+  <button class="tab" onclick="switchTab('learn')">📚 Learn</button>
+</div>
+
+<!-- ══ EXPLORE TAB ══ -->
+<div class="panel active" id="panel-explore">
+  <div class="rbox">🔴 <strong>Watch the dots!</strong> Each pattern adds dots to form a shape. See WHY triangular numbers form triangles and square numbers form squares!</div>
+
+  <div class="slabel">🔺 Triangular Numbers — 1, 3, 6, 10, 15 …</div>
+  <div class="dot-stage" id="tri-stage"></div>
+  <div class="btn-row">
+    <button class="btn btn-red" onclick="animatePattern('tri')">▶ Animate</button>
+    <button class="btn btn-gray" onclick="resetPattern('tri')">↺ Reset</button>
+  </div>
+
+  <div class="slabel" style="margin-top:.9rem;">🟦 Square Numbers — 1, 4, 9, 16, 25 …</div>
+  <div class="dot-stage" id="sq-stage"></div>
+  <div class="btn-row">
+    <button class="btn btn-orange" onclick="animatePattern('sq')">▶ Animate</button>
+    <button class="btn btn-gray" onclick="resetPattern('sq')">↺ Reset</button>
+  </div>
+
+  <div class="slabel" style="margin-top:.9rem;">🟣 Cube Numbers — 1, 8, 27, 64 …</div>
+  <div class="dot-stage" id="cube-stage"></div>
+  <div class="btn-row">
+    <button class="btn btn-gray" style="background:linear-gradient(135deg,var(--purple),#a78bfa);color:#fff;" onclick="animatePattern('cube')">▶ Animate</button>
+    <button class="btn btn-gray" onclick="resetPattern('cube')">↺ Reset</button>
+  </div>
+
+  <!-- DISCOVERY -->
+  <div class="disc-card" style="margin-top:1rem;" id="disc-36" style="display:none;">
+    <h3>✨ Amazing Discovery!</h3>
+    <p><strong>36</strong> is BOTH a triangular number (T₈) AND a square number (6²)!<br>The same 36 dots can be arranged as a perfect triangle <em>or</em> a perfect square!</p>
+    <div class="btn-row" style="margin-top:.5rem;">
+      <button class="btn btn-orange" onclick="show36()">👀 Show me!</button>
+    </div>
+    <div id="disc-36-vis" style="display:none;margin-top:.6rem;">
+      <div style="display:flex;gap:1.5rem;justify-content:center;flex-wrap:wrap;">
+        <div style="text-align:center;"><div class="dot-grid" id="tri36"></div><div class="dot-name" style="margin-top:4px;">Triangle (T₈)<br>1+2+3+4+5+6+7+8=36</div></div>
+        <div style="font-family:'Baloo 2',cursive;font-size:1.5rem;font-weight:800;color:var(--orange);align-self:center;">=</div>
+        <div style="text-align:center;"><div class="dot-grid" id="sq36"></div><div class="dot-name" style="margin-top:4px;">Square (6²)<br>6×6=36</div></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══ BUILD TAB ══ -->
+<div class="panel" id="panel-build">
+  <div class="rbox">🧩 <strong>Your turn!</strong> The next number in the sequence is shown. Fill in the dots to complete the pattern!</div>
+
+  <div id="build-content"></div>
+</div>
+
+<!-- ══ QUIZ TAB ══ -->
+<div class="panel" id="panel-quiz">
+  <div class="sbar">
+    <div class="spill sc">✅ Correct <span class="n" id="qsc">0</span></div>
+    <div class="spill sw">❌ Wrong <span class="n" id="qsw">0</span></div>
+    <div class="spill sq">📝 Q <span class="n" id="qsq">1</span>/10</div>
+  </div>
+
+  <div id="quizArea">
+    <div class="qcard">
+      <span class="qemoji" id="qe">🤔</span>
+      <div class="qtext" id="qt">Loading…</div>
+      <div class="seq-strip" id="qseq" style="display:none;"></div>
+      <div class="arow" id="arow"></div>
+      <div class="fb" id="fb"></div>
+      <button class="bn" id="bn" onclick="nextQ()">Next →</button>
+    </div>
+  </div>
+
+  <div class="endsc" id="endsc">
+    <span class="tr" id="etr">🏆</span>
+    <h2 id="etitle"></h2>
+    <div class="sb" id="escore"></div>
+    <p id="emsg"></p>
+    <button class="btr" onclick="startQuiz()">🎮 Play Again!</button>
+  </div>
+  <button class="btn btn-gray" style="display:block;margin:.4rem auto 0;font-size:.76rem;" onclick="startQuiz()">🔄 New Game</button>
+</div>
+
+<!-- ══ LEARN TAB ══ -->
+<div class="panel" id="panel-learn">
+  <div class="lcard">
+    <h3>🔺 Why "Triangular Numbers"?</h3>
+    <div class="pattern-preview" id="learn-tri"></div>
+    <p>When you arrange the dots, they form a <strong>triangle shape</strong>! The sequence 1, 3, 6, 10, 15 … Each new number adds one more row at the bottom. The n-th triangular number = <strong>1+2+3+…+n</strong>.</p>
+  </div>
+
+  <div class="lcard">
+    <h3>🟦 Why "Square Numbers"?</h3>
+    <div class="pattern-preview" id="learn-sq"></div>
+    <p>The dots form a <strong>perfect square</strong>! 1×1=1, 2×2=4, 3×3=9, 4×4=16 … The n-th square number = <strong>n×n = n²</strong>. That's why we say "4 squared" = 16!</p>
+  </div>
+
+  <div class="lcard">
+    <h3>✨ The Odd Number Secret!</h3>
+    <div id="odd-trick"></div>
+    <p>Square numbers are always the <strong>sum of consecutive odd numbers</strong>! This is one of the most beautiful patterns in all of mathematics!</p>
+  </div>
+
+  <div class="lcard">
+    <h3>🟣 Why "Cube Numbers"?</h3>
+    <div class="pattern-preview" id="learn-cube"></div>
+    <p>Cube numbers come from building a <strong>3D cube</strong>! 1×1×1=1, 2×2×2=8, 3×3×3=27 … The n-th cube = <strong>n³</strong>. That's why we say "3 cubed" = 27!</p>
+  </div>
+
+  <div class="disc-card">
+    <h3>🌟 The 36 Discovery — A Number with Two Identities!</h3>
+    <p><strong>36 = T₈ (8th triangular number)</strong> because 1+2+3+4+5+6+7+8 = 36<br>
+    <strong>36 = 6² (square number)</strong> because 6×6 = 36<br><br>
+    The same number can play different roles depending on context. Can you find other numbers like this?</p>
+  </div>
+</div>
+
+</div><!-- wrapper -->
+
+<script>
+/* ═══ UTILS ═══ */
+function rnd(a,b){return Math.floor(Math.random()*(b-a+1))+a;}
+function delay(ms){return new Promise(r=>setTimeout(r,ms));}
+function switchTab(id){
+  document.querySelectorAll('.tab').forEach((t,i)=>{t.classList.toggle('active',['explore','build','quiz','learn'][i]===id);});
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+}
+function confetti(n){
+  const cl=['#e84040','#f97316','#f59e0b','#22c55e','#3b82f6','#8b5cf6'];
+  for(let i=0;i<n;i++){
+    const el=document.createElement('div');el.className='cf';
+    el.style.cssText=`left:${Math.random()*100}vw;top:-10px;background:${cl[rnd(0,cl.length-1)]};width:${rnd(6,11)}px;height:${rnd(6,11)}px;border-radius:${Math.random()>.5?'50%':'2px'};--d:${(.8+Math.random()*.7).toFixed(2)}s;--dl:${(Math.random()*.35).toFixed(2)}s;`;
+    document.body.appendChild(el);setTimeout(()=>el.remove(),1800);
+  }
+}
+
+/* ═══ TRIANGULAR NUMBERS ═══ */
+function triNum(n){return n*(n+1)/2;}
+function buildTriDots(n,color='red'){
+  const grid=document.createElement('div');grid.className='dot-grid';
+  for(let r=1;r<=n;r++){
+    const row=document.createElement('div');row.className='dot-row';
+    for(let c=0;c<r;c++){
+      const d=document.createElement('div');d.className=`dot ${color} hidden`;row.appendChild(d);
+    }
+    grid.appendChild(row);
+  }
+  return grid;
+}
+function buildSqDots(n,color='blue'){
+  const grid=document.createElement('div');grid.className='dot-grid';
+  for(let r=0;r<n;r++){
+    const row=document.createElement('div');row.className='dot-row';
+    for(let c=0;c<n;c++){
+      const d=document.createElement('div');d.className=`dot ${color} hidden`;row.appendChild(d);
+    }
+    grid.appendChild(row);
+  }
+  return grid;
+}
+function buildCubeDots(n,color='purple'){
+  // Represent cube as stacked layers shown isometrically with dot count n³
+  const total=n*n*n;
+  const grid=document.createElement('div');grid.className='dot-grid';
+  // show as n rows of n*n
+  for(let r=0;r<n;r++){
+    const row=document.createElement('div');row.className='dot-row';
+    for(let c=0;c<n*n;c++){
+      const d=document.createElement('div');d.className=`dot ${color} hidden`;row.appendChild(d);
+    }
+    grid.appendChild(row);
+  }
+  return grid;
+}
+
+async function animateDots(container,delayMs=40){
+  const dots=[...container.querySelectorAll('.dot.hidden')];
+  for(const d of dots){
+    d.classList.remove('hidden');d.classList.add('pop');
+    await delay(delayMs);
+  }
+}
+
+/* ═══ EXPLORE STAGE ═══ */
+function buildStage(stageId,items){
+  const stage=document.getElementById(stageId);
+  stage.innerHTML='';
+  items.forEach(item=>{
+    const wrap=document.createElement('div');wrap.className='dot-group';
+    const g=item.grid;g.classList.add('dot-grid-item');
+    wrap.appendChild(g);
+    const numDiv=document.createElement('div');numDiv.className='dot-num';numDiv.textContent=item.num;
+    const nameDiv=document.createElement('div');nameDiv.className='dot-name';nameDiv.textContent=item.name;
+    wrap.appendChild(numDiv);wrap.appendChild(nameDiv);
+    stage.appendChild(wrap);
+  });
+}
+
+function initExplore(){
+  // Triangular: T1 to T5
+  const triItems=[];
+  for(let n=1;n<=5;n++){
+    triItems.push({grid:buildTriDots(n,'red'),num:triNum(n),name:`T${n}`});
+  }
+  buildStage('tri-stage',triItems);
+  // Square: 1 to 5
+  const sqItems=[];
+  for(let n=1;n<=5;n++){
+    sqItems.push({grid:buildSqDots(n,'blue'),num:n*n,name:`${n}²`});
+  }
+  buildStage('sq-stage',sqItems);
+  // Cube: 1 to 4
+  const cubeItems=[];
+  for(let n=1;n<=4;n++){
+    cubeItems.push({grid:buildCubeDots(n,'purple'),num:n*n*n,name:`${n}³`});
+  }
+  buildStage('cube-stage',cubeItems);
+  // show disc card
+  document.getElementById('disc-36').style.display='block';
+}
+
+let animating=false;
+async function animatePattern(type){
+  if(animating)return;animating=true;
+  const stageId=type+'-stage';
+  const stage=document.getElementById(stageId);
+  const groups=stage.querySelectorAll('.dot-group');
+  for(const g of groups){
+    await animateDots(g,35);
+    await delay(120);
+  }
+  animating=false;
+}
+function resetPattern(type){
+  const stageId=type+'-stage';
+  document.querySelectorAll(`#${stageId} .dot`).forEach(d=>{d.classList.add('hidden');d.classList.remove('pop');});
+}
+
+function show36(){
+  const vis=document.getElementById('disc-36-vis');
+  vis.style.display='block';
+  // tri of 8
+  const t36=document.getElementById('tri36');t36.innerHTML='';
+  const triG=buildTriDots(8,'orange');
+  t36.appendChild(triG);
+  // sq of 6
+  const s36=document.getElementById('sq36');s36.innerHTML='';
+  const sqG=buildSqDots(6,'green');
+  s36.appendChild(sqG);
+  animateDots(t36,20);
+  setTimeout(()=>animateDots(s36,20),500);
+}
+
+/* ═══ BUILD TAB ═══ */
+const BUILD_LEVELS=[
+  {type:'tri',n:6,prev:[1,3,6,10,15],target:21,hint:'Add 6 dots to the bottom row of T₅ to make T₆!'},
+  {type:'sq',n:5,prev:[1,4,9,16],target:25,hint:'Make a 5×5 square of dots!'},
+  {type:'tri',n:7,prev:[1,3,6,10,15,21],target:28,hint:'Add 7 dots to T₆ to make T₇!'},
+  {type:'sq',n:6,prev:[1,4,9,16,25],target:36,hint:'Make a 6×6 square — this is also a triangular number!'},
+  {type:'cube',n:3,prev:[1,8],target:27,hint:'3³ = 3×3×3 = 27 dots!'},
+];
+let buildLevel=0,buildFilled=0,buildTarget=0;
+
+function renderBuild(){
+  const lv=BUILD_LEVELS[buildLevel];
+  buildTarget=lv.target;buildFilled=0;
+  const div=document.getElementById('build-content');
+  div.innerHTML='';
+  // sequence
+  const seqD=document.createElement('div');seqD.innerHTML=`
+    <div class="slabel">Complete the sequence:</div>
+    <div class="seq-strip">
+      ${lv.prev.map((n,i)=>`<div class="seq-num ${['red-n','blue-n','green-n','orange-n','purple-n'][i%5]}">${n}</div><div class="seq-arrow">→</div>`).join('')}
+      <div class="seq-num seq-q" id="build-answer">?</div>
+    </div>`;
+  div.appendChild(seqD);
+  // hint
+  const hintD=document.createElement('div');hintD.className='rbox';hintD.style.marginBottom='.4rem';
+  hintD.innerHTML=`💡 <strong>Hint:</strong> ${lv.hint}<br><strong>Target: ${lv.target} dots</strong>`;
+  div.appendChild(hintD);
+  // build grid
+  const ba=document.createElement('div');ba.className='build-area';
+  const counter=document.createElement('div');counter.className='build-counter';counter.id='build-counter';counter.textContent=`Dots placed: 0 / ${lv.target}`;
+  ba.appendChild(counter);
+  const grid=document.createElement('div');grid.className='build-dot-grid';grid.id='build-grid';
+  // create grid of empty dots
+  const rows=lv.type==='sq'?lv.n:lv.type==='tri'?lv.n:(lv.n);
+  const cols=lv.type==='sq'?lv.n:lv.type==='tri'?lv.n:(lv.n*lv.n);
+  for(let r=0;r<rows;r++){
+    const row=document.createElement('div');row.className='dot-row';
+    const c_count=lv.type==='tri'?(r+1):cols;
+    for(let c=0;c<c_count;c++){
+      const d=document.createElement('div');d.className='build-dot';
+      d.onclick=()=>toggleBuildDot(d);
+      row.appendChild(d);
+    }
+    grid.appendChild(row);
+  }
+  ba.appendChild(grid);
+  // buttons
+  const brow=document.createElement('div');brow.className='btn-row';
+  brow.innerHTML=`<button class="btn btn-red" onclick="checkBuild()">✅ Check</button>
+  <button class="btn btn-gray" onclick="clearBuild()">↺ Clear</button>
+  <button class="btn btn-gray" onclick="buildLevel=(buildLevel+1)%BUILD_LEVELS.length;renderBuild()">⏭ Next</button>`;
+  ba.appendChild(brow);
+  const fbD=document.createElement('div');fbD.id='build-fb';fbD.className='build-fb';
+  ba.appendChild(fbD);
+  div.appendChild(ba);
+}
+function toggleBuildDot(d){
+  d.classList.toggle('filled');
+  buildFilled=document.querySelectorAll('#build-grid .build-dot.filled').length;
+  document.getElementById('build-counter').textContent=`Dots placed: ${buildFilled} / ${buildTarget}`;
+  const ans=document.getElementById('build-answer');
+  if(ans)ans.textContent=buildFilled||'?';
+  document.getElementById('build-fb').className='build-fb';
+  document.getElementById('build-fb').textContent='';
+}
+function clearBuild(){
+  document.querySelectorAll('#build-grid .build-dot').forEach(d=>d.classList.remove('filled'));
+  buildFilled=0;
+  document.getElementById('build-counter').textContent=`Dots placed: 0 / ${buildTarget}`;
+  const ans=document.getElementById('build-answer');if(ans)ans.textContent='?';
+  document.getElementById('build-fb').className='build-fb';
+  document.getElementById('build-fb').textContent='';
+}
+function checkBuild(){
+  const fb=document.getElementById('build-fb');
+  if(buildFilled===buildTarget){
+    fb.className='build-fb fok';
+    fb.textContent=`🎉 Perfect! You placed exactly ${buildTarget} dots! That's the answer!`;
+    confetti(12);
+    const ans=document.getElementById('build-answer');if(ans){ans.textContent=buildTarget;ans.style.background='#dcfce7';ans.style.borderColor='#86efac';ans.style.color='#166534';}
+  } else if(buildFilled<buildTarget){
+    fb.className='build-fb fno';
+    fb.textContent=`You have ${buildFilled} dots. You need ${buildTarget-buildFilled} more!`;
+  } else {
+    fb.className='build-fb fno';
+    fb.textContent=`Too many! You have ${buildFilled} dots but need only ${buildTarget}. Remove ${buildFilled-buildTarget}.`;
+  }
+}
+
+/* ═══ QUIZ ═══ */
+const TRI=[1,3,6,10,15,21,28,36,45,55];
+const SQ=[1,4,9,16,25,36,49,64,81,100];
+const CUBE=[1,8,27,64,125];
+
+function genQuestions(){
+  const qs=[];
+  // Q1-3: what's next in triangular
+  for(let i=0;i<3;i++){
+    const idx=rnd(2,6);
+    const seq=TRI.slice(0,idx);const ans=TRI[idx];
+    const wrong=[ans+rnd(1,4),ans-rnd(1,3),TRI[idx-1]+rnd(2,5)].filter(x=>x>0&&x!==ans);
+    const opts=shuffle([ans,...wrong.slice(0,3)]);
+    qs.push({type:'next',emoji:'🔺',text:`What comes next in this <strong>triangular number</strong> sequence?`,seq,ans,opts,color:'red-n',explain:`T${idx+1} = 1+2+…+${idx+1} = ${ans}`});
+  }
+  // Q2: what's next in square
+  for(let i=0;i<2;i++){
+    const idx=rnd(2,6);
+    const seq=SQ.slice(0,idx);const ans=SQ[idx];
+    const wrong=[ans+rnd(1,5),ans-rnd(1,4),(idx+2)*(idx+2)].filter(x=>x>0&&x!==ans);
+    const opts=shuffle([ans,...wrong.slice(0,3)]);
+    qs.push({type:'next',emoji:'🟦',text:`What comes next in this <strong>square number</strong> sequence?`,seq,ans,opts,color:'blue-n',explain:`${idx+2}² = ${(idx+2)*(idx+2)} = ${ans}`});
+  }
+  // Q3: identify type
+  const typeQs=[
+    {emoji:'🤔',text:`Is <strong>36</strong> a triangular number, square number, or both?`,ans:'Both! T₈ and 6²',opts:['Only triangular','Only square','Both! T₈ and 6²','Neither'],explain:'36 = 1+2+…+8 = 36 AND 6×6 = 36. It\'s both!'},
+    {emoji:'🔢',text:`What is the 5th <strong>triangular number</strong>?`,ans:'15',opts:['10','15','21','12'],explain:'T₅ = 1+2+3+4+5 = 15'},
+    {emoji:'🔢',text:`What is 4² (4 squared)?`,ans:'16',opts:['8','12','16','20'],explain:'4² = 4×4 = 16, forming a 4×4 square of dots'},
+    {emoji:'🟣',text:`What is 3³ (3 cubed)?`,ans:'27',opts:['9','18','27','36'],explain:'3³ = 3×3×3 = 27 dots filling a 3×3×3 cube'},
+    {emoji:'✨',text:`1+3+5+7 = ? (sum of first 4 odd numbers)`,ans:'16',opts:['14','15','16','17'],explain:'1+3+5+7 = 16 = 4². Sum of first n odd numbers = n²!'},
+  ];
+  qs.push(...shuffle(typeQs).slice(0,5));
+  return shuffle(qs).slice(0,10);
+}
+function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=rnd(0,i);[b[i],b[j]]=[b[j],b[i]];}return b;}
+
+let Qs=[],qIdx=0,qCor=0,qWr=0,qDone=false;
+const TQ=10;
+
+function startQuiz(){
+  Qs=genQuestions();qIdx=0;qCor=0;qWr=0;qDone=false;
+  document.getElementById('endsc').classList.remove('show');
+  document.getElementById('quizArea').style.display='';
+  document.getElementById('qsc').textContent=0;document.getElementById('qsw').textContent=0;document.getElementById('qsq').textContent=1;
+  showQ();
+}
+function showQ(){
+  const q=Qs[qIdx];qDone=false;
+  document.getElementById('qe').textContent=q.emoji;
+  document.getElementById('qt').innerHTML=q.text;
+  // seq strip
+  const seqEl=document.getElementById('qseq');
+  if(q.seq){
+    seqEl.style.display='flex';seqEl.innerHTML='';
+    q.seq.forEach((n,i)=>{
+      const d=document.createElement('div');d.className=`seq-num ${q.color||'red-n'}`;d.textContent=n;seqEl.appendChild(d);
+      if(i<q.seq.length-1){const arr=document.createElement('div');arr.className='seq-arrow';arr.textContent='→';seqEl.appendChild(arr);}
+    });
+    const arr2=document.createElement('div');arr2.className='seq-arrow';arr2.textContent='→';seqEl.appendChild(arr2);
+    const qMark=document.createElement('div');qMark.className='seq-num seq-q';qMark.textContent='?';seqEl.appendChild(qMark);
+  } else {seqEl.style.display='none';}
+  // answer buttons
+  const arow=document.getElementById('arow');arow.innerHTML='';
+  q.opts.forEach(opt=>{
+    const b=document.createElement('button');b.className='abtn';b.textContent=opt;
+    b.onclick=()=>checkAns(opt,q);
+    arow.appendChild(b);
+  });
+  document.getElementById('fb').className='fb';
+  document.getElementById('bn').className='bn';
+}
+function checkAns(chosen,q){
+  if(qDone)return;qDone=true;
+  const btns=document.querySelectorAll('.abtn');
+  btns.forEach(b=>{b.disabled=true;if(b.textContent===chosen)b.classList.add('sel');});
+  const fb=document.getElementById('fb');
+  setTimeout(()=>{
+    if(chosen===q.ans){
+      qCor++;document.querySelectorAll('.abtn').forEach(b=>{if(b.textContent===chosen)b.className='abtn ok';});
+      fb.className='fb fok show';fb.innerHTML=`✅ <strong>Correct!</strong> ${q.explain}`;confetti(5);
+    } else {
+      qWr++;document.querySelectorAll('.abtn').forEach(b=>{if(b.textContent===chosen)b.className='abtn no';if(b.textContent===q.ans)b.className='abtn ok';});
+      fb.className='fb fno show';fb.innerHTML=`❌ The answer is <strong>${q.ans}</strong>. ${q.explain}`;
+    }
+    document.getElementById('qsc').textContent=qCor;document.getElementById('qsw').textContent=qWr;
+    const bn=document.getElementById('bn');bn.className='bn show';
+    bn.textContent=qIdx>=TQ-1?'See Results 🏆':'Next →';
+  },260);
+}
+function nextQ(){
+  qIdx++;document.getElementById('qsq').textContent=Math.min(qIdx+1,TQ);
+  if(qIdx>=TQ){showEnd();return;}
+  showQ();
+}
+function showEnd(){
+  document.getElementById('quizArea').style.display='none';
+  document.getElementById('endsc').classList.add('show');
+  const pct=qCor/TQ;
+  let tr='🏆',ti='',mg='';
+  if(pct===1){tr='🥇';ti='Perfect Score!';mg='You know ALL the patterns! Outstanding!';}
+  else if(pct>=.8){tr='🌟';ti='Excellent!';mg=`${qCor}/${TQ} — Great understanding of patterns!`;}
+  else if(pct>=.6){tr='👍';ti='Good Job!';mg=`${qCor}/${TQ} — Check the Learn tab to revise!`;}
+  else{tr='💪';ti='Keep Practicing!';mg=`${qCor}/${TQ} — Visit the Explore tab to see the dot patterns!`;}
+  document.getElementById('etr').textContent=tr;document.getElementById('etitle').textContent=ti;
+  document.getElementById('escore').textContent=`${qCor}/${TQ}`;document.getElementById('emsg').textContent=mg;
+  if(pct>=.8)confetti(22);
+}
+
+/* ═══ LEARN TAB ═══ */
+function buildLearn(){
+  // Triangular preview
+  const lTri=document.getElementById('learn-tri');
+  [1,3,6,10,15].forEach((n,i)=>{
+    const wrap=document.createElement('div');wrap.className='pp-item';
+    const g=buildTriDots(i+1,'red');
+    g.querySelectorAll('.dot').forEach(d=>d.classList.remove('hidden'));
+    wrap.appendChild(g);
+    const numDiv=document.createElement('div');numDiv.className='pp-num';numDiv.textContent=n;
+    wrap.appendChild(numDiv);lTri.appendChild(wrap);
+  });
+  // Square preview
+  const lSq=document.getElementById('learn-sq');
+  [1,4,9,16,25].forEach((n,i)=>{
+    const wrap=document.createElement('div');wrap.className='pp-item';
+    const g=buildSqDots(i+1,'blue');
+    g.querySelectorAll('.dot').forEach(d=>d.classList.remove('hidden'));
+    wrap.appendChild(g);
+    const numDiv=document.createElement('div');numDiv.className='pp-num';numDiv.textContent=n;
+    wrap.appendChild(numDiv);lSq.appendChild(wrap);
+  });
+  // Odd trick
+  const oddDiv=document.getElementById('odd-trick');
+  [[1],[1,3],[1,3,5],[1,3,5,7],[1,3,5,7,9]].forEach((odds,i)=>{
+    const row=document.createElement('div');row.className='odd-row';
+    odds.forEach((o,j)=>{
+      const chip=document.createElement('div');chip.className='odd-chip';chip.textContent=o;
+      if(j>0){const plus=document.createElement('span');plus.className='odd-eq';plus.textContent='+';row.appendChild(plus);}
+      row.appendChild(chip);
+    });
+    const eq=document.createElement('span');eq.className='odd-eq';eq.textContent='=';row.appendChild(eq);
+    const sq=document.createElement('div');sq.className='odd-sq';sq.textContent=`${(i+1)*(i+1)} = ${i+1}²`;row.appendChild(sq);
+    oddDiv.appendChild(row);
+  });
+  // Cube preview (just numbers)
+  const lCube=document.getElementById('learn-cube');
+  [1,8,27,64,125].forEach((n,i)=>{
+    const wrap=document.createElement('div');wrap.className='pp-item';
+    const g=buildCubeDots(i+1,'purple');
+    g.querySelectorAll('.dot').forEach(d=>d.classList.remove('hidden'));
+    wrap.appendChild(g);
+    const numDiv=document.createElement('div');numDiv.className='pp-num';numDiv.textContent=n;
+    wrap.appendChild(numDiv);lCube.appendChild(wrap);
+  });
+}
+
+/* ═══ BOOT ═══ */
+initExplore();
+buildLearn();
+renderBuild();
+startQuiz();
+</script>
+</body>
+</html>
